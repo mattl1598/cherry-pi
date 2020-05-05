@@ -1,0 +1,64 @@
+h1 {font-family:sans-serif;}
+p {font-family:sans-serif;}
+
+.menubar {
+	background: #787878;
+	border:0px;
+	border-color:gray;
+	top:0;
+	left:0;
+	/* display:block; */
+	width:100%;
+	z-index:9999;
+	position:fixed;
+}
+
+.menubar ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+	top:0;
+	overflow:hidden;
+}
+
+.menubar li {
+	float:left;
+	font-family:sans-serif;
+	font-size: larger;
+	font-weight:bold;
+	color:#000;
+	/* border-right:2px;
+	border-color:black; */
+}
+
+.menubar li a, a:link, a:visited {
+	text-decoration:none;
+	color:#ffffff;
+	display:block;
+	padding:10px 20px;
+}
+
+.menubar li:hover {
+	color:blue;
+	background-color:#909090;
+}
+
+li#active {
+	background-color:#8080ff
+}
+
+li#active a, a:link, a:visited {
+	color:black
+}
+
+.menubar li.right {
+	float: right;
+}
+
+.break p {
+	padding-top: 20px
+}
+
+img.post {
+	max-height: 500px;
+}
