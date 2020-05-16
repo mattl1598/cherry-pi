@@ -5,16 +5,47 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+class Key(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	key = db.Column(db.String(64))
+	type = db.Column(db.Text)
+	sensor = db.relationship('Sensor', backref='key', lazy=True, uselist=False)
+
+	def __repr__(self):
+		return f"Key('{self.key}', '{self.type}')"
+
+
+class Sensor(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	name = db.Column(db.String(40), nullable=False)
+	key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
+	desc = db.Column(db.Text)
+
+	def __repr__(self):
+		return f"Sensor('{self.name}', '{self.key_id}', '{self.desc}'"
+
+
+class APILog(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+	sensor_id = db.Column(db.String(64))
+	dictionary = db.Column(db.Text, nullable=False)
+
+	def __repr__(self):
+		return f"APILog('{self.date}', '{self.sensor_id}', '{self.dictionary}')"
+
+
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	title = db.Column(db.Text, nullable=False)
+	category = db.Column(db.Text, nullable=False)
 	content = db.Column(db.Text, nullable=False)
 	image_file = db.Column(db.String(40), nullable=False, default='default.jpg')
-	author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+	author_id = db.Column(db.String(16), db.ForeignKey('user.id'), nullable=False)
 
 	def __repr__(self):
-		return f"Post('{self.date}', '{self.title}', '{self.content}')"
+		return f"Post('{self.date}', '{self.title}', '{self.content}', '{self.category}', '{self.image_file}', '{self.author_id}')"
 
 
 class User(UserMixin, db.Model):
@@ -23,12 +54,13 @@ class User(UserMixin, db.Model):
 	firstname = db.Column(db.String(20), nullable=False)
 	lastname = db.Column(db.String(30))
 	email = db.Column(db.String(120), unique=True, nullable=False)
+	role = db.Column(db.String(40), nullable=False)
 	password_hash = db.Column(db.String(128))
 	password = db.Column(db.String(60), nullable=False)
 	post = db.relationship('Post', backref='user', lazy=True)
 
 	def __repr__(self):
-		return f"User('{self.username}', '{self.email}')"
+		return f"User('{self.firstname}', '{self.lastname}', '{self.username}', '{self.email}')"
 
 	@property
 	def password(self):
