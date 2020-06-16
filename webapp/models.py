@@ -5,6 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+def get_date_time():
+	return datetime.datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
+
+
 class Key(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	key = db.Column(db.String(64))
@@ -25,9 +29,18 @@ class Sensor(db.Model):
 		return f"Sensor('{self.name}', '{self.key_id}', '{self.desc}'"
 
 
+class APIBackup(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	date = db.Column(db.DateTime, nullable=False, default=get_date_time)
+	backup = db.Column(db.Text, nullable=False)
+
+	def __repr__(self):
+		return f"APIBackup('{self.id}', '{self.date}', '{self.backup}')"
+
+
 class APILog(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+	date = db.Column(db.DateTime, nullable=False, default=get_date_time)
 	sensor_id = db.Column(db.String(64))
 	dictionary = db.Column(db.Text, nullable=False)
 
@@ -60,7 +73,7 @@ class User(UserMixin, db.Model):
 	post = db.relationship('Post', backref='user', lazy=True)
 
 	def __repr__(self):
-		return f"User('{self.firstname}', '{self.lastname}', '{self.username}', '{self.email}')"
+		return f"User('{self.id}', '{self.firstname}', '{self.lastname}', '{self.username}', '{self.role}', '{self.email}')"
 
 	@property
 	def password(self):
@@ -76,4 +89,4 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-	return User.query.get(int(user_id))
+	return User.query.get(str(user_id))
