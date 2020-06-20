@@ -29,7 +29,6 @@ def gen_nav():
 	])
 
 	try:
-		print(getattr(current_user, 'firstname'))
 		nav.Bar('user', [
 			nav.Item('Home', 'home'),
 			nav.Item('About', 'about'),
@@ -41,6 +40,27 @@ def gen_nav():
 	except AttributeError:
 		nav.Bar('user', [
 			nav.Item('Home', 'home'),
+			nav.Item('About', 'about'),
+			# nav.Item('Login', 'login', html_attrs={'class': "right"}),
+			# nav.Item('Register', 'register', html_attrs={'class': "right"}),
+			nav.Item('Logout', 'logout', html_attrs={'class': 'right'}),
+			nav.Item('User', 'user', html_attrs={'class': 'right'})
+		])
+
+	try:
+		nav.Bar('admin', [
+			nav.Item('Home', 'home'),
+			nav.Item('Admin', 'admin'),
+			nav.Item('About', 'about'),
+			# nav.Item('Login', 'login', html_attrs={'class': ["right"]}),
+			# nav.Item('Register', 'register', html_attrs={'class': ["right"]}),
+			nav.Item('Logout', 'logout', html_attrs={'class': 'right'}),
+			nav.Item(getattr(current_user, 'firstname'), 'user', html_attrs={'class': 'right'}),
+		])
+	except AttributeError:
+		nav.Bar('admin', [
+			nav.Item('Home', 'home'),
+			nav.Item('Admin', 'admin'),
 			nav.Item('About', 'about'),
 			# nav.Item('Login', 'login', html_attrs={'class': "right"}),
 			# nav.Item('Register', 'register', html_attrs={'class': "right"}),
@@ -90,7 +110,13 @@ def logout():
 
 @app.route("/admin")
 def admin():
-	return render_template('admin_page.html', title='Admin Page')
+	try:
+		if "admin" != current_user.role:
+			abort(403)
+		else:
+			return render_template('admin_page.html', title='Admin Page')
+	except AttributeError:
+		abort(403)
 
 @app.route("/user")
 @login_required
@@ -110,11 +136,11 @@ def register():
 			id = str(base64.urlsafe_b64encode(hashlib.md5(str(id_base).encode('utf-8')).digest()), 'utf-8').rstrip("=")[0:15]
 			matches = User.query.filter_by(id=id).paginate().total
 
-		user = User(id=id, firstname=form.firstname.data, lastname=form.lastname.data, username=form.username.data, email=form.email.data, password=form.password.data, role="user")
+		new_user = User(id=id, firstname=form.firstname.data, lastname=form.lastname.data, username=form.username.data, email=form.email.data, password=form.password.data, role="user")
 
-		db.session.add(user)
+		db.session.add(new_user)
 		db.session.commit()
-		login_user(user)
+		login_user(new_user)
 		return redirect(url_for('registered'))
 	return render_template('register.html', title='Register', form=form)
 
