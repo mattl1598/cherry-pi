@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_navigation import Navigation
 import json
-from webapp.scripts import test_script
+from webapp.scripts import test_script, key_64
+import datetime
 
 def load_env():
 	with open(".env", "r") as fp:
@@ -19,7 +20,7 @@ app.static_folder = 'static'
 app.config['SECRET_KEY'] = env_vars["secret_key"]
 app.config['SQLALCHEMY_DATABASE_URI'] = env_vars["postgresql"]
 
-app.jinja_env.globals.update(test=test_script)
+app.jinja_env.globals.update(test=test_script, date=datetime.datetime.now, key64=key_64)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()

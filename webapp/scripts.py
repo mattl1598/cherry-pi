@@ -1,5 +1,10 @@
 import base64
 import hashlib
+import secrets
+
+
+def key_64(length):
+	return str(secrets.token_urlsafe(length))
 
 
 def test_script(base):

@@ -3,6 +3,7 @@ from flask import render_template, url_for, request, redirect, session, jsonify,
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from webapp.models import User, Post, Sensor, Key, APILog, APIBackup
 from webapp.forms import RegistrationForm, LoginForm
+from webapp.scripts import key_64
 import datetime
 import base64
 import hashlib
@@ -83,6 +84,11 @@ def home():
 	# posts = Post.query.all()
 	# return render_template('home.html', title='Home', posts=posts)
 	return render_template('home.html')
+
+
+@app.route("/bse64/<int:length>", methods=['GET'])
+def bse_64(length):
+	return jsonify({"key": key_64(length)})
 
 
 @app.route("/about")
@@ -182,3 +188,4 @@ def make_api_backup():
 
 	db.session.add(new_backup)
 	db.session.commit()
+

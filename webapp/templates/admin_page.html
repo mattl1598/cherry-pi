@@ -2,6 +2,10 @@
 {% block content %}
 	<h1>This is the Admin page</h1>
 
+	<p>{{ key64(64) }}</p>
+
+	<a href="#" onClick = "clip_key_64()"> Copy </a>
+
 	<form>
 		<label for="test">Enter Text:</label><input id="test" type="text"/>
 		<input type="button" name="press" value="Submit">
