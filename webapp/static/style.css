@@ -4,6 +4,7 @@
     --light-bg: #575757;
 
     --main-accent: #2bd1d4;
+    --main-accent-2: #008F8F;
 
     --confirm-accent: #33CCA6;
 }
@@ -12,8 +13,14 @@ h1 {font-family: sans-serif; color: white;}
 p {font-family: sans-serif; color: white;}
 html {background: var(--dark-bg);}
 
+#content {
+	background: var(--less-dark-bg);
+	margin: 1% 10%;
+	padding-top: 2%
+}
+
 .menubar {
-	background: var(--light-bg);
+	background: var(--main-accent);
 	border: 0px;
 	border-color: gray;
 	top: 0;
@@ -44,7 +51,7 @@ html {background: var(--dark-bg);}
 
 .menubar li a, a:link, a:visited {
 	text-decoration: none;
-	color: #ffffff;
+	color: #000;
 	display: block;
 	padding: 10px 20px;
 }
@@ -55,7 +62,7 @@ html {background: var(--dark-bg);}
 }
 
 li#active {
-	background-color: var(--main-accent);
+	background-color: var(--main-accent-2);
 }
 
 li#active a, a:link, a:visited {
