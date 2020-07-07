@@ -28,7 +28,7 @@ html {background: var(--dark-bg);}
 	/* display: block; */
 	width: 100%;
 	z-index: 9999;
-	position: fixed;
+	/* position: fixed; */
 }
 
 .menubar ul {
