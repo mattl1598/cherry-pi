@@ -20,7 +20,7 @@ app.static_folder = 'static'
 app.config['SECRET_KEY'] = env_vars["secret_key"]
 app.config['SQLALCHEMY_DATABASE_URI'] = env_vars["postgresql"]
 
-app.jinja_env.globals.update(test=test_script, date=datetime.datetime.now, key64=key_64)
+app.jinja_env.globals.update(test=test_script, date=datetime.datetime.now, key64=key_64, dump=json.dumps, int=int, isinstance=isinstance)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()

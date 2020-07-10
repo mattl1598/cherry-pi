@@ -7,31 +7,31 @@
 	</head>
 	<body>
 		<div class="banner"><img src="static/bannertest.png" alt=""/></div>
-		<div class="menubar">
-		<ul>
-	    {% if current_user.is_authenticated %}
-			{% if current_user.role == "admin" %}
-				{% for item in nav.admin %}
-				<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
-					<a href="{{ item.url }}">{{ item.label }}</a>
-				</li>
-				{% endfor %}
-			{% else %}
-				{% for item in nav.user %}
-				<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
-					<a href="{{ item.url }}">{{ item.label }}</a>
-				</li>
-				{% endfor %}
-			{% endif %}
-	    {% else %}
-				{% for item in nav.guest %}
-				<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
+		<nav class="menubar">
+			<ul>
+		    {% if current_user.is_authenticated %}
+				{% if current_user.role == "admin" %}
+					{% for item in nav.admin %}
+					<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
 						<a href="{{ item.url }}">{{ item.label }}</a>
-				</li>
-				{% endfor %}
-	    {% endif %}
-		</ul>
-		</div>
+					</li>
+					{% endfor %}
+				{% else %}
+					{% for item in nav.user %}
+					<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
+						<a href="{{ item.url }}">{{ item.label }}</a>
+					</li>
+					{% endfor %}
+				{% endif %}
+		    {% else %}
+					{% for item in nav.guest %}
+					<li id="{{ 'active' if item.is_active else '' }}" class="{{ item.html_attrs['class'] }}">
+							<a href="{{ item.url }}">{{ item.label }}</a>
+					</li>
+					{% endfor %}
+		    {% endif %}
+			</ul>
+		</nav>
 
 
 		<div id="content">

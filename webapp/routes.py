@@ -23,6 +23,7 @@ def parse_date_time(string1):
 def gen_nav():
 	nav.Bar('guest', [
 		nav.Item('Home', 'home'),
+		nav.Item('Sensors', 'sensors'),
 		nav.Item('About', 'about'),
 		nav.Item('Register', 'register', html_attrs={'class': 'right'}),
 		nav.Item('Login', 'login', html_attrs={'class': 'right'}),
@@ -32,6 +33,7 @@ def gen_nav():
 	try:
 		nav.Bar('user', [
 			nav.Item('Home', 'home'),
+			nav.Item('Sensors', 'sensors'),
 			nav.Item('About', 'about'),
 			# nav.Item('Login', 'login', html_attrs={'class': ["right"]}),
 			# nav.Item('Register', 'register', html_attrs={'class': ["right"]}),
@@ -41,6 +43,7 @@ def gen_nav():
 	except AttributeError:
 		nav.Bar('user', [
 			nav.Item('Home', 'home'),
+			nav.Item('Sensors', 'sensors'),
 			nav.Item('About', 'about'),
 			# nav.Item('Login', 'login', html_attrs={'class': "right"}),
 			# nav.Item('Register', 'register', html_attrs={'class': "right"}),
@@ -51,6 +54,7 @@ def gen_nav():
 	try:
 		nav.Bar('admin', [
 			nav.Item('Home', 'home'),
+			nav.Item('Sensors', 'sensors'),
 			nav.Item('Admin', 'admin'),
 			nav.Item('About', 'about'),
 			# nav.Item('Login', 'login', html_attrs={'class': ["right"]}),
@@ -61,6 +65,7 @@ def gen_nav():
 	except AttributeError:
 		nav.Bar('admin', [
 			nav.Item('Home', 'home'),
+			nav.Item('Sensors', 'sensors'),
 			nav.Item('Admin', 'admin'),
 			nav.Item('About', 'about'),
 			# nav.Item('Login', 'login', html_attrs={'class': "right"}),
@@ -94,6 +99,17 @@ def bse_64(length):
 @app.route("/about")
 def about():
 	return render_template('about.html', title="About")
+
+@app.route("/sensors")
+def sensors():
+	sensor_list = Sensor.query.all()
+	sensor_dict = {}
+	for sensor in sensor_list:
+		desc = ast.literal_eval(sensor.desc)
+		desc.update({"id": sensor.id, "name": sensor.name})
+		sensor_dict[str(sensor.id)] = desc
+	print(sensor_dict)
+	return render_template('sensors.html', title="Sensors", sensors=sensor_dict)
 
 
 @app.route("/login", methods=['GET', 'POST'])

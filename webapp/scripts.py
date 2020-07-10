@@ -3,8 +3,9 @@ import hashlib
 import secrets
 
 
-def key_64(length):
-	return str(secrets.token_urlsafe(length))
+def key_64(char_len):
+	nbytes = round(char_len/1.34375)
+	return str(secrets.token_urlsafe(nbytes))
 
 
 def test_script(base):

@@ -10,8 +10,61 @@
 }
 
 h1 {font-family: sans-serif; color: white;}
+h2 {font-family: sans-serif; color: white;}
 p {font-family: sans-serif; color: white;}
 html {background: var(--dark-bg);}
+
+.big-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+
+}
+
+.sensor {
+	border: 3px solid var(--main-accent);
+	border-radius: 25px;
+	padding: 10px;
+	margin: 2px;
+}
+
+.progress-ring__circle {
+    stroke-dasharray: 326.7256 326.7256;
+    transform: rotate(-225deg);
+    transform-origin: 50% 50%;
+    fill: transparent;
+	r: 52;
+    cx: 60;
+    cy: 60;
+    stroke-width: 6;
+}
+
+
+.numeric {
+	position: relative;
+    display: inline-block; /* <= shrinks container to image size */
+    margin: 10px;
+    border: 3px solid var(--main-accent);
+    width: 100%;
+}
+
+
+.numeric img { /* <= optional, for responsiveness */
+	display: block;
+	height: auto;
+	margin: 20% 23% 23% 23%;
+	transform: rotate(-90deg);
+	/* transform-origin: 50% 50%; */
+	max-width: 60px;
+}
+
+
+.numeric svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 
 #content {
 	background: var(--less-dark-bg);
@@ -19,7 +72,9 @@ html {background: var(--dark-bg);}
 	padding-top: 2%
 }
 
+
 .menubar {
+    position: sticky;
 	background: var(--main-accent);
 	border: 0px;
 	border-color: gray;
@@ -32,10 +87,10 @@ html {background: var(--dark-bg);}
 }
 
 .menubar ul {
+    top: 0;
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	top: 0;
 	overflow: hidden;
 }
 

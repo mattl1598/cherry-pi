@@ -4,10 +4,16 @@
 	
 	{% for post in posts %}
 		<hr>
-		<h1><a href="{{ url_for('post', post_id=post.id) }}">"{{ post.title }}"</a></h1><p>&nbsp
+		<h1><a href="{{ url_for('post', post_id=post.id) }}">"{{ post.title }}"</a></h1><p>&nbsp;
 			by {{ post.user.firstname }} {{ post.user.lastname }}</p>
 		<p>{{ post.content }}</p>
-		
 	{% endfor %}
 	<hr>
+	<table>
+		{% for i in range(100) %}
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+		{% endfor %}
+	</table>
 {% endblock content %}
