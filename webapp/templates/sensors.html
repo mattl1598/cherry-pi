@@ -9,7 +9,10 @@
 				<div class="sensor_readout">
 					<h3>{{ key }}</h3>
 					<div class="numeric">
-						<img src="{{ url_for('static', filename='battery-with-a-bolt.svg') }}"/>
+						{% if value["type"] == "charger" %}
+							<img src="{{ url_for('static', filename='battery-with-a-bolt.svg') }}"/>
+						{% elif value["type"] == "test" %}
+							<img src="{{ url_for('static', filename='battery-with-a-bolt.svg') }}"/>
 						<svg class="progress-ring" width="120"height="120">
 							<circle class="progress-ring__circle" stroke="#222222" stroke-dashoffset="{{ 327 - (270*0.9083) }}"/>
 							<circle class="progress-ring__circle" stroke="white" stroke-dashoffset="{{ 327 - (value['value']*270*0.9083/value['max']) }}"/>
@@ -17,7 +20,6 @@
 					</div>
 					<span>{{ value['value'] ~ "/" ~ value['max'] }}</span>
 				</div>
-				<br>
 			{% else %}
 				{{ value }}
 			{% endif %}

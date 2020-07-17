@@ -65,6 +65,11 @@ html {background: var(--dark-bg);}
 
 }
 
+
+img.socials-logo {
+	max-width: 30px;
+}
+
 /*
 .numeric svg {
 	position: absolute;
@@ -142,3 +147,4 @@ li#active a, a:link, a:visited {
 img.post {
 	max-height: 500px;
 }
+
