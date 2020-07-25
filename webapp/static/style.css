@@ -65,6 +65,18 @@ html {background: var(--dark-bg);}
 
 }
 
+.footer-flex {
+	background: #223333;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+
+.footer-item ul {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
 
 img.socials-logo {
 	max-width: 30px;
