@@ -3,11 +3,12 @@ from flask import render_template, url_for, request, redirect, session, jsonify,
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from webapp.models import User, Post, Sensor, Key, APILog, APIBackup
 from webapp.forms import RegistrationForm, LoginForm
-from webapp.scripts import key_64
+from webapp.scripts import key_64, nested_keys
 import datetime
 import base64
 import hashlib
 import ast
+import json
 
 api = {"test": {"name": "test", "number": 420}}
 
@@ -100,6 +101,7 @@ def bse_64(length):
 def about():
 	return render_template('about.html', title="About")
 
+
 @app.route("/sensors")
 def sensors():
 	sensor_list = Sensor.query.all()
@@ -130,6 +132,7 @@ def logout():
 	logout_user()
 	return render_template('logged_out.html', title='Logged Out')
 
+
 @app.route("/admin")
 def admin():
 	try:
@@ -139,6 +142,7 @@ def admin():
 			return render_template('admin_page.html', title='Admin Page')
 	except AttributeError:
 		abort(403)
+
 
 @app.route("/user")
 @login_required
@@ -190,13 +194,19 @@ def api_update():
 			api_key = Key.query.filter_by(key=data["sensor_key"]).first
 			key_type = ast.literal_eval(api_key.type)
 			sensor_id = key_type["sensor_id"]
-			if Sensor.query.filter_by(id=sensor_id).first.key_id == api_key.id:
-				new_log = APILog(datetime=data["timestamp"], sensor_id=sensor_id, dictionary=data["data"])
-				db.session.add(new_log)
-				for key, value in data.items():
-					api[sensor_id][key] = data["data"][key]
+			sensor_db = Sensor.query.filter_by(id=sensor_id).first
+			if nested_keys(data["data"]) == nested_keys(ast.literal_eval(sensor_db.desc)):
+				if Sensor.query.filter_by(id=sensor_id).first.key_id == api_key.id:
+					new_log = APILog(datetime=data["timestamp"], sensor_id=sensor_id, dictionary=str(json.dumps(data["data"])))
+					db.session.add(new_log)
+					sensor_db.desc = str(json.dumps(data["data"]))
+					db.session.commit()
+			else:
+				abort(400)
 		else:
 			abort(400)
+	else:
+		abort(405)
 
 
 def make_api_backup():

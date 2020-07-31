@@ -29,7 +29,7 @@ html {background: var(--dark-bg);}
 }
 
 .progress-ring__circle {
-    stroke-dasharray: 326.7256 326.7256;
+    stroke-dasharray: 326.7256;
     transform: rotate(-225deg);
     transform-origin: 50% 50%;
     fill: transparent;
@@ -43,11 +43,11 @@ html {background: var(--dark-bg);}
 .numeric {
 	position: relative;
     display: inline-block; /* <= shrinks container to image size */
-    margin: 0px;
+    margin: 0;
     border: 3px solid var(--main-accent);
     width: 100%;
     text-align: center;
-    padding: 10px 0px;
+    padding: 10px 0;
 }
 
 
@@ -70,16 +70,48 @@ html {background: var(--dark-bg);}
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-evenly;
+	font-family: sans-serif;
 }
 
 .footer-item ul {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
+	list-style-type: none;
+	color: white;
+}
+
+.footer-item ul li a {
+	display: inline;
+	vertical-align: middle;
+	text-decoration: none;
+	color: white;
+}
+
+.footer-item ul li a img {
+	vertical-align: middle;
+	padding: 3px;
+}
+
+.footer-item {
+	min-width: 30%;
 }
 
 img.socials-logo {
-	max-width: 30px;
+	max-width: 32px;
+}
+
+img#reddit {
+	filter: invert(40%) sepia(97%) saturate(2927%) hue-rotate(1deg) brightness(102%) contrast(105%);
+}
+
+img#spotify {
+	filter: invert(55%) sepia(21%) saturate(1689%) hue-rotate(88deg) brightness(100%) contrast(83%);
+}
+
+img#github {
+	filter: invert(36%) sepia(16%) saturate(1480%) hue-rotate(222deg) brightness(95%) contrast(89%);
+}
+
+img#twitter {
+	filter: brightness(0) saturate(100%) invert(64%) sepia(38%) saturate(6892%) hue-rotate(176deg) brightness(98%) contrast(93%);
 }
 
 /*
@@ -96,12 +128,10 @@ img.socials-logo {
 	padding-top: 2%
 }
 
-
 .menubar {
     position: sticky;
 	background: var(--main-accent);
-	border: 0px;
-	border-color: gray;
+	border: 0 gray;
 	top: 0;
 	left: 0;
 	/* display: block; */
@@ -128,7 +158,7 @@ img.socials-logo {
 	border-color:black; */
 }
 
-.menubar li a, a:link, a:visited {
+.menubar li a, .menubar li a:link, .menubar li a:visited {
 	text-decoration: none;
 	color: #000;
 	display: block;
@@ -136,15 +166,15 @@ img.socials-logo {
 }
 
 .menubar li:hover {
-	color: blue;#0000FF
+	color: blue; /*#0000FF*/
 	background-color: #909090;
 }
 
-li#active {
+.menubar li#active {
 	background-color: var(--main-accent-2);
 }
 
-li#active a, a:link, a:visited {
+.menubar li#active a, a:link, a:visited {
 	color: black;
 }
 
