@@ -190,13 +190,13 @@ def api_update():
 	if request.method == "PUT":
 		data = request.get_json()
 		keys = data.keys()
-		if "sensor_key" in keys and "data" in keys and "timestamp" in keys and (datetime.datetime.utcnow() - parse_date_time(data["timestamp"])).total_seconds() < 300:
-			api_key = Key.query.filter_by(key=data["sensor_key"]).first
-			key_type = ast.literal_eval(api_key.type)
-			sensor_id = key_type["sensor_id"]
+		if "sensor_id" in keys and "data" in keys and "timestamp" in keys and "verification" in keys:
+			sensor_id = data["sensor_id"]
 			sensor_db = Sensor.query.filter_by(id=sensor_id).first
+			api_key = Key.query.filter_by(id=sensor_db.key_id).first
+			key_type = ast.literal_eval(api_key.type)
 			if nested_keys(data["data"]) == nested_keys(ast.literal_eval(sensor_db.desc)):
-				if Sensor.query.filter_by(id=sensor_id).first.key_id == api_key.id:
+				if sensor_db.key_id == api_key.id:
 					new_log = APILog(datetime=data["timestamp"], sensor_id=sensor_id, dictionary=str(json.dumps(data["data"])))
 					db.session.add(new_log)
 					sensor_db.desc = str(json.dumps(data["data"]))
