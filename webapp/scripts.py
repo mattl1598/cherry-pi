@@ -2,6 +2,9 @@ import base64
 import hashlib
 import secrets
 
+_trans_5C = bytes((x ^ 0x5C) for x in range(256))
+_trans_36 = bytes((x ^ 0x36) for x in range(256))
+
 
 def key_64(char_len):
 	nbytes = round(char_len/1.34375)
@@ -24,3 +27,4 @@ def nested_keys(input):
 		else:
 			keys_list.append(key)
 	return keys_list
+

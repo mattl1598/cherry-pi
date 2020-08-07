@@ -6,7 +6,7 @@ from flask_login import UserMixin
 
 
 def get_date_time():
-	return datetime.datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
+	return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Key(db.Model):

@@ -1,7 +1,7 @@
 from webapp import app, db, nav
-from flask import render_template, url_for, request, redirect, session, jsonify, abort
+from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
-from webapp.models import User, Post, Sensor, Key, APILog, APIBackup
+from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time
 from webapp.forms import RegistrationForm, LoginForm
 from webapp.scripts import key_64, nested_keys
 import datetime
@@ -11,10 +11,6 @@ import ast
 import json
 
 api = {"test": {"name": "test", "number": 420}}
-
-
-def get_date_time():
-	return datetime.datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
 
 
 def parse_date_time(string1):
@@ -190,20 +186,29 @@ def api_update():
 	if request.method == "PUT":
 		data = request.get_json()
 		keys = data.keys()
-		if "sensor_id" in keys and "data" in keys and "timestamp" in keys and "verification" in keys:
+		if "time_stamp" in keys and "sensor_id" in keys and "data" in keys and "verification" in keys:
 			sensor_id = data["sensor_id"]
-			sensor_db = Sensor.query.filter_by(id=sensor_id).first
-			api_key = Key.query.filter_by(id=sensor_db.key_id).first
+			sensor_db = Sensor.query.filter_by(id=sensor_id).first()
+			api_key = Key.query.filter_by(id=sensor_db.key_id).first()
 			key_type = ast.literal_eval(api_key.type)
-			if nested_keys(data["data"]) == nested_keys(ast.literal_eval(sensor_db.desc)):
-				if sensor_db.key_id == api_key.id:
-					new_log = APILog(datetime=data["timestamp"], sensor_id=sensor_id, dictionary=str(json.dumps(data["data"])))
+			inc_nested = nested_keys(data["data"])
+			db_nested = nested_keys(ast.literal_eval(sensor_db.desc))
+			if inc_nested == db_nested:
+				if sensor_db.key_id == api_key.id and hashlib.sha256(str(data["time_stamp"] + api_key.key).encode()).hexdigest() == data["verification"]:
+					new_log = APILog(sensor_id=sensor_id, dictionary=str(json.dumps(data["data"])))
 					db.session.add(new_log)
 					sensor_db.desc = str(json.dumps(data["data"]))
 					db.session.commit()
+					print("api_success")
+					return Response('Update successful.', 200)
+				else:
+					abort(401)
 			else:
+				print(inc_nested)
+				print(db_nested)
 				abort(400)
 		else:
+			print(keys)
 			abort(400)
 	else:
 		abort(405)
