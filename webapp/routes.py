@@ -3,7 +3,7 @@ from flask import render_template, url_for, request, redirect, session, jsonify,
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time
 from webapp.forms import RegistrationForm, LoginForm
-from webapp.scripts import key_64, nested_keys
+from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
 import datetime
 import base64
 import hashlib
@@ -172,9 +172,66 @@ def registered():
 	return render_template('registered.html', title='Successfully Registered')
 
 
+@app.route("/graph/<sensor_id>", methods=['GET'])
+def graph(sensor_id):
+	if (request.method == 'GET') and (Sensor.query.filter_by(id=sensor_id).first() is not None):
+		sensor_log = APILog.query.filter_by(sensor_id=sensor_id).all()
+		graph_series = ast.literal_eval(sensor_log[0].dictionary)["values"].keys()
+		graph_tuples = [(str(get_date_time()), ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc),)]
+		# graph_tuples = []
+		last_dict = None
+		for item in sensor_log:
+			# if last_dict is not None:
+			# 	just_before = str((datetime.datetime.strptime(str(item.date), "%Y-%m-%d %H:%M:%S") - datetime.timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S"))
+			# 	graph_tuples.append((just_before, ast.literal_eval(last_dict)))
+			graph_tuples.append((str(item.date), ast.literal_eval(item.dictionary),))
+			# last_dict = str(item.dictionary)
+		graph_tuples.sort(key=lambda tup: tup[0])
+		data = graph_tuples
+		if len(list(graph_series)) == 1:
+			image = str(one_line_graph(graph_tuples, list(graph_series)))[2:-1]
+		else:
+			image = str(multi_line_graph(graph_tuples, list(graph_series)))[2:-1]
+		return render_template('graph.html', title="Graph of " + str(sensor_id), data=data, image=image)
+	else:
+		abort(404)
+
+@app.route("/graph/<sensor_id>/last", methods=['GET'])
+def graph_range(sensor_id):
+	if (request.method == 'GET') and (Sensor.query.filter_by(id=sensor_id).first() is not None):
+
+		days = request.args.get('days', default=0, type=int)
+		hours = request.args.get('hours', default=0, type=int)
+		minutes = request.args.get('minutes', default=0, type=int)
+		if not (days or hours or minutes):
+			days = 30
+		target_date = datetime.datetime.today() - datetime.timedelta(days=days, hours=hours, minutes=minutes)
+		xlim = [target_date, datetime.datetime.today()]
+		print(target_date)
+		sensor_log = APILog.query.filter_by(sensor_id=sensor_id).all()
+		graph_series = ast.literal_eval(sensor_log[0].dictionary)["values"].keys()
+		graph_tuples = []
+		for item in sensor_log:
+			if item.date > target_date:
+				new_tuple = (str(item.date), ast.literal_eval(item.dictionary),)
+				graph_tuples.append(new_tuple)
+		data = graph_series
+		print(len(list(graph_series)))
+		if len(graph_tuples) != 0:
+			if len(list(graph_series)) == 1:
+				image = str(one_line_graph(graph_tuples, list(graph_series)))[2:-1]
+			else:
+				image = str(multi_line_graph(graph_tuples, list(graph_series)))[2:-1]
+		else:
+			
+		return render_template('graph.html', title="Graph of " + str(sensor_id), data=data, image=image)
+	else:
+		abort(404)
+
+
 @app.route("/sensor-api/get/<sensor_id>", methods=['GET'])
 def sensor_api(sensor_id):
-	if (request.method == 'GET') and (Sensor.query.filter_by(id=sensor_id).first is not None):
+	if (request.method == 'GET') and (Sensor.query.filter_by(id=sensor_id).first() is not None):
 		if api[sensor_id]:
 			return jsonify({"timestamp": get_date_time(), "data": api[sensor_id]})
 		else:

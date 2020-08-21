@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% for item in data %}
+	{{ item }} <br>
+{% endfor %}
+<img src="data:image/png;base64, {{ image }}" alt="graph">
+
+{% endblock content %}
