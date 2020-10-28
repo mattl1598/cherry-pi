@@ -12,7 +12,7 @@ function clip_text(a_string){
 }
 
 function clip_key_64(length) {
-	var url = 'http://127.0.0.1:5000/bse64/' + length;
+	var url = 'http://larby.co.uk/bse64/' + length;
 	console.log(url);
     fetch(url)
         .then(response => response.json())

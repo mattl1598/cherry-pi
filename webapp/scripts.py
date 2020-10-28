@@ -1,3 +1,8 @@
+#!/var/www/cherry-pi-prod/venv
+
+import sys
+print(sys.version)
+
 import base64
 import hashlib
 import secrets

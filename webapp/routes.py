@@ -1,5 +1,7 @@
+#!/var/www/cherry-pi-prod/venv
+
 from webapp import app, db, nav
-from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response
+from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time
 from webapp.forms import RegistrationForm, LoginForm
@@ -9,12 +11,17 @@ import base64
 import hashlib
 import ast
 import json
+import requests
 
 api = {"test": {"name": "test", "number": 420}}
 
 
 def parse_date_time(string1):
 	return datetime.datetime.strptime(string1, "%Y-%m-%d_%H-%M-%S")
+
+
+def get_time_stamp():
+	return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def gen_nav():
@@ -91,6 +98,48 @@ def home():
 @app.route("/bse64/<int:length>", methods=['GET'])
 def bse_64(length):
 	return jsonify({"key": key_64(length)})
+
+
+@app.route("/js/<filename>", methods=['GET'])
+def js_loader(filename):
+	if filename == "litter_listens.js":
+		return send_file('/var/www/cherry-pi-prod/webapp/static/js/litter_listens.js')
+	else:
+		abort(404)
+
+@app.route("/listens/<filename>", methods=['GET'])
+def listens(filename):
+	if filename == "litterpicker" or filename == "litterpicker.mp3":
+		sensor_id = "Ld5zbQgU-vcqM-rV"
+		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
+		no_of_listens = int(data["values"]["Litter Picker"]["value"])
+		return {"listens": no_of_listens}
+	else:
+		abort(404)
+
+@app.route("/sound/<filename>", methods=['GET'])
+def sound(filename):
+	if filename == "litterpicker" or filename == "litterpicker.mp3":
+		sensor_id = "Ld5zbQgU-vcqM-rV"
+		time_stamp = str(get_time_stamp())
+		api_key = "t6DLYRPnaevdbq1vVL_jkkT0XOMMFAR1XRLDeeDF-8rApzV-KZXAdtXX5dNObOLI"
+		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
+		header = {"content-type": "application/json"}
+
+		data["values"]["Litter Picker"]["value"] += 1
+
+		request_json = {
+			"sensor_id": sensor_id,
+			"time_stamp": str(time_stamp),
+			"verification": hashlib.sha256(str(time_stamp + api_key).encode()).hexdigest(),
+			"data": data
+		}
+
+		r = requests.put('http://larby.co.uk/sensor-api/update/', data=json.dumps(request_json), headers=header)
+
+		return send_file('/var/www/cherry-pi-prod/webapp/static/audio/litterpicker.mp3')
+	else:
+		abort(404)
 
 
 @app.route("/about")
@@ -192,6 +241,7 @@ def graph(sensor_id):
 			image = str(one_line_graph(graph_tuples, list(graph_series)))[2:-1]
 		else:
 			image = str(multi_line_graph(graph_tuples, list(graph_series)))[2:-1]
+		
 		return render_template('graph.html', title="Graph of " + str(sensor_id), data=data, image=image)
 	else:
 		abort(404)
@@ -223,7 +273,7 @@ def graph_range(sensor_id):
 			else:
 				image = str(multi_line_graph(graph_tuples, list(graph_series)))[2:-1]
 		else:
-			
+			abort(404)
 		return render_template('graph.html', title="Graph of " + str(sensor_id), data=data, image=image)
 	else:
 		abort(404)

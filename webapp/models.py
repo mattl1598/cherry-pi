@@ -1,3 +1,5 @@
+#!/var/www/cherry-pi-prod/venv
+
 from datetime import datetime
 from webapp import db
 from webapp import login_manager
