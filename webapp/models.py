@@ -63,6 +63,16 @@ class Post(db.Model):
 		return f"Post('{self.date}', '{self.title}', '{self.content}', '{self.category}', '{self.image_file}', '{self.author_id}')"
 
 
+class SPCode(db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	char = db.Column(db.String(64), nullable=False)
+	session = db.Column(db.String(64), nullable=False)
+	active = db.Column(db.String(5), nullable=False)
+
+	def __repr__(self):
+		return f"SPCode('{self.id}', '{self.char}', '{self.active}')"
+
+
 class User(UserMixin, db.Model):
 	id = db.Column(db.String(16), primary_key=True)
 	username = db.Column(db.String(15), unique=True, nullable=False)

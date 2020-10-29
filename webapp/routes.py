@@ -1,17 +1,19 @@
 #!/var/www/cherry-pi-prod/venv
-
-from webapp import app, db, nav
+import sys
+from webapp import app, db, nav, env_vars
 from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
-from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time
-from webapp.forms import RegistrationForm, LoginForm
+from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time, SPCode
+from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
+from webapp.upload import get_creds, upload_file
 import datetime
 import base64
 import hashlib
 import ast
 import json
 import requests
+from google.oauth2 import service_account
 
 api = {"test": {"name": "test", "number": 420}}
 
@@ -145,6 +147,40 @@ def sound(filename):
 @app.route("/about")
 def about():
 	return render_template('about.html', title="About")
+
+
+@app.route("/sp/upload", methods=["GET", "POST"])
+def upload():
+	error = ""
+	form = SPUploadForm()
+	# codes = ["SP_TEST", "SP_TEST2"]
+	codes_db = SPCode.query.filter_by(active="True").with_entities(SPCode.id).all()
+	codes = []
+	for tup in codes_db:
+		codes.append(tup[0])
+	if request.method == 'POST':
+		code = form.upload_code.data
+		print(code)
+		print(codes)
+		code_db = SPCode.query.filter_by(id=code).first()
+		if code in codes:
+			print("valid code")
+			filename = form.file.data.filename
+			mime = form.file.data.mimetype
+			file = request.files["file"].read()
+			file_data = {"file_name": str(code_db.char) + " " + str(code) + filename[filename.rfind("."):], "mimetype": mime}
+			upload_file(file, file_data, get_creds())
+			code_db.active = "False"
+			db.session.commit()
+			return redirect(url_for("success"))
+		else:
+			error = "Invalid Upload Code"
+	return render_template("upload.html", title="Upload", form=form, error=error)
+
+
+@app.route("/sp/upload/success", methods=["GET"])
+def success():
+	return render_template("success.html", title="Success")
 
 
 @app.route("/sensors")

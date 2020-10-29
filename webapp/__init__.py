@@ -13,7 +13,7 @@ from webapp.scripts import test_script, key_64
 import datetime
 
 def load_env():
-	with open("/var/www/cherry-pi-prod/.env", "r") as fp:
+	with open("C:/Users/mattl/Documents/repos/cherry-pi/.env", "r") as fp:
 		envs = json.load(fp)
 	return envs
 
@@ -37,3 +37,5 @@ nav = Navigation()
 nav.init_app(app)
 
 from webapp import routes
+
+# db.create_all()

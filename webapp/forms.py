@@ -1,8 +1,9 @@
 #!/var/www/cherry-pi-prod/venv
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, HiddenField
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, FileField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
+
 
 
 class LoginForm(FlaskForm):
@@ -20,3 +21,9 @@ class RegistrationForm(FlaskForm):
 	password = PasswordField('Password', validators=[DataRequired()])
 	confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
 	submit = SubmitField('Register')
+
+
+class SPUploadForm(FlaskForm):
+	upload_code = StringField('Upload Code', validators=[DataRequired()])
+	file = FileField()
+	submit = SubmitField('Upload')

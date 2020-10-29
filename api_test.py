@@ -15,7 +15,7 @@ time_stamp = get_time_stamp()
 
 header = {"content-type": "application/json"}
 
-test_data = {"type": "test", "values": {"Test Value": {"value": 25, "max": 100, "type": "test"}}}
+test_data = {"type": "test", "values": {"Test Value": {"value": 64, "max": 100, "type": "test"}}}
 test_data2 = {"type": "test", "values": {
 	"Charger 1": {"value": 42, "max": 100, "type": "test"},
 	"Charger 2": {"value": 25, "max": 100, "type": "test"},
@@ -23,14 +23,14 @@ test_data2 = {"type": "test", "values": {
 }}
 
 request_json = {
-				"sensor_id": sensor_id2,
+				"sensor_id": sensor_id,
 				"time_stamp": str(time_stamp),
-				"verification": hashlib.sha256(str(time_stamp + api_key2).encode()).hexdigest(),
-				"data": test_data2
+				"verification": hashlib.sha256(str(time_stamp + api_key).encode()).hexdigest(),
+				"data": test_data
 				}
 
 # Making a PUT request
-r = requests.put('http://127.0.0.1:5000/sensor-api/update/', data=json.dumps(request_json), headers=header)
+r = requests.put('http://larby.co.uk/sensor-api/update/', data=json.dumps(request_json), headers=header)
 
 # check status code for response received
 # success code - 200
