@@ -2,11 +2,17 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build, MediaFileUpload
 from googleapiclient.http import MediaIoBaseUpload
 import io
+import socket
 
 def get_creds():
 	SCOPES = ['https://www.googleapis.com/auth/drive']
-	# SERVICE_ACCOUNT_FILE = 'C:/Users/mattl/OneDrive/005_Env-Files/cherry-pi website/project-cherry-pi-28156479eae6.json'
-	SERVICE_ACCOUNT_FILE = '/var/www/cherry-pi-prod/project-cherry-pi-28156479eae6.json'
+	hostname = socket.gethostname()
+	if hostname == "DESKTOP-MG5V3KN":
+		SERVICE_ACCOUNT_FILE = 'C:/Users/mattl/OneDrive/005_Env-Files/cherry-pi website/project-cherry-pi-28156479eae6.json'
+	elif hostname == "vps6084.first-root.com":
+		SERVICE_ACCOUNT_FILE = '/var/www/cherry-pi-prod/project-cherry-pi-28156479eae6.json'
+	else:
+		raise FileNotFoundError("drive api filepath not specified")
 
 
 	credentials = service_account.Credentials.from_service_account_file(
