@@ -5,7 +5,9 @@ import io
 
 def get_creds():
 	SCOPES = ['https://www.googleapis.com/auth/drive']
+	# SERVICE_ACCOUNT_FILE = 'C:/Users/mattl/OneDrive/005_Env-Files/cherry-pi website/project-cherry-pi-28156479eae6.json'
 	SERVICE_ACCOUNT_FILE = '/var/www/cherry-pi-prod/project-cherry-pi-28156479eae6.json'
+
 
 	credentials = service_account.Credentials.from_service_account_file(
 			SERVICE_ACCOUNT_FILE, scopes=SCOPES)

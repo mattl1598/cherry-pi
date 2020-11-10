@@ -152,6 +152,7 @@ def about():
 @app.route("/sp/upload", methods=["GET", "POST"])
 def upload():
 	error = ""
+	link_code = request.args.get('code', default="", type=str)
 	form = SPUploadForm()
 	# codes = ["SP_TEST", "SP_TEST2"]
 	link_code = request.args.get('code', default="", type=str)
