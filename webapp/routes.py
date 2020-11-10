@@ -106,6 +106,8 @@ def bse_64(length):
 def js_loader(filename):
 	if filename == "litter_listens.js":
 		return send_file('/var/www/cherry-pi-prod/webapp/static/js/litter_listens.js')
+	elif filename == "sp_blog.js":
+		return send_file('/var/www/cherry-pi-prod/webapp/static/js/sp_blog.js')
 	else:
 		abort(404)
 
