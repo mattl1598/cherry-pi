@@ -3,7 +3,7 @@ import sys
 from webapp import app, db, nav, env_vars
 from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
-from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time, SPCode
+from webapp.models import User, Post, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost
 from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
 from webapp.upload import get_creds, upload_file
@@ -13,13 +13,13 @@ import hashlib
 import ast
 import json
 import requests
-from google.oauth2 import service_account
+import markdown2
 
 api = {"test": {"name": "test", "number": 420}}
 
 
 def parse_date_time(string1):
-	return datetime.datetime.strptime(string1, "%Y-%m-%d_%H-%M-%S")
+	return datetime.datetime.strptime(string1, "%Y-%m-%d %H:%M:%S")
 
 
 def get_time_stamp():
@@ -147,6 +147,28 @@ def sound(filename):
 @app.route("/about")
 def about():
 	return render_template('about.html', title="About")
+
+@app.route("/sp-post")
+def sp_post():
+	post_id = request.args.get('post', default=0, type=int)
+	request_src = request.args.get('src', default="", type=str)
+	print(post_id)
+	if post_id:
+		valid_ids_db = SPPost.query.with_entities(SPPost.id).all()
+		valid_ids = []
+		for tup in valid_ids_db:
+			valid_ids.append(tup[0])
+		print(valid_ids)
+		if post_id in valid_ids:
+			post = SPPost.query.filter_by(id=post_id).first()
+			print(post)
+			html_content = markdown2.markdown(post.content)
+			if request_src == "js":
+				return render_template("sppost_js.html", post=post, content=html_content)
+			else:
+				return render_template('sppost.html', post=post)
+		else:
+			abort(404)
 
 
 @app.route("/sp/upload", methods=["GET", "POST"])

@@ -63,6 +63,33 @@ class Post(db.Model):
 		return f"Post('{self.date}', '{self.title}', '{self.content}', '{self.category}', '{self.image_file}', '{self.author_id}')"
 
 
+def now():
+	return datetime.utcnow().strftime()
+
+
+class SPPost(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	date = db.Column(db.DateTime, nullable=False, default=now)
+	title = db.Column(db.Text, nullable=False)
+	category = db.Column(db.Text, nullable=False)
+	content = db.Column(db.Text, nullable=False)
+	author = db.Column(db.String(40))
+
+	def __repr__(self):
+		return f"SPPost('{self.id}', '{self.date}', '{self.title}', '{self.category}', '{self.content}', '{self.author}')"
+
+	def get_dict(self):
+		post_dict = {
+			"id": self.id,
+			"date": self.date,
+			"title": self.title,
+			"category": self.category,
+			"content": self.content,
+			"author": self.author
+		}
+		return post_dict
+
+
 class SPCode(db.Model):
 	id = db.Column(db.String(16), primary_key=True)
 	char = db.Column(db.String(64), nullable=False)

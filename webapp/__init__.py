@@ -11,11 +11,22 @@ from flask_cors import CORS
 import json
 from webapp.scripts import test_script, key_64
 import datetime
+import socket
+
 
 def load_env():
-	# with open("C:/Users/mattl/Documents/repos/cherry-pi/.env", "r") as fp:
-	with open("/var/www/cherry-pi-prod/.env", "r") as fp:
-		envs = json.load(fp)
+	hostname = socket.gethostname()
+	if hostname == 'DESKTOP-MG5V3KN':
+		print("desktop")
+		with open("C:/Users/mattl/Documents/repos/cherry-pi/.env", "r") as fp:
+			envs = json.load(fp)
+	elif hostname == 'vps6084.first-root.com':
+		print("webserver")
+		with open("/var/www/cherry-pi-prod/.env", "r") as fp:
+			envs = json.load(fp)
+	else:
+		print("other")
+		raise FileNotFoundError(".env filepath not specified for this host")
 	return envs
 
 
@@ -36,6 +47,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 nav = Navigation()
 nav.init_app(app)
+
 
 from webapp import routes
 
