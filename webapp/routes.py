@@ -155,6 +155,7 @@ def upload():
 	link_code = request.args.get('code', default="", type=str)
 	form = SPUploadForm()
 	# codes = ["SP_TEST", "SP_TEST2"]
+	link_code = request.args.get('code', default="", type=str)
 	codes_db = SPCode.query.filter_by(active="True").with_entities(SPCode.id).all()
 	codes = []
 	for tup in codes_db:
