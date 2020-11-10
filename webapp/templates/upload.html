@@ -7,7 +7,11 @@
 <div class="form">
 	<form method="post" action="" enctype="multipart/form-data">
 		{{ form.csrf_token }}
-		<p>{{ form.upload_code(placeholder="Upload Code") }}</p>
+		{% if link_code == "" %}
+			<p>{{ form.upload_code(placeholder="Upload Code") }}</p>
+		{% else %}
+			<p>{{ form.upload_code(placeholder="Upload Code", value=link_code) }}</p>
+		{% endif %}
 		<p>{{ form.file }}</p>
 		<input type="submit" value="Upload"/>
 	</form>

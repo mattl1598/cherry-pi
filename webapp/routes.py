@@ -152,6 +152,7 @@ def about():
 @app.route("/sp/upload", methods=["GET", "POST"])
 def upload():
 	error = ""
+	link_code = request.args.get('code', default="", type=str)
 	form = SPUploadForm()
 	# codes = ["SP_TEST", "SP_TEST2"]
 	codes_db = SPCode.query.filter_by(active="True").with_entities(SPCode.id).all()
@@ -175,7 +176,7 @@ def upload():
 			return redirect(url_for("success"))
 		else:
 			error = "Invalid Upload Code"
-	return render_template("upload.html", title="Upload", form=form, error=error)
+	return render_template("upload.html", title="Upload", form=form, error=error, link_code=link_code)
 
 
 @app.route("/sp/upload/success", methods=["GET"])
