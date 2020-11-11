@@ -164,9 +164,11 @@ def sp_post():
 		if post_id in valid_ids:
 			post = SPPost.query.filter_by(id=post_id).first()
 			print(post)
-			html_content = markdown2.markdown(post.content)
+			post_dict = post.get_dict()
+			post_dict["html_content"] = markdown2.markdown(post.content)
 			if request_src == "js":
-				return render_template("sppost_js.html", post=post, content=html_content)
+				return post_dict
+				# return render_template("sppost_js.html", post=post, content=html_content)
 			else:
 				return render_template('sppost.html', post=post)
 		else:
