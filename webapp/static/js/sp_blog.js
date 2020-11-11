@@ -20,6 +20,6 @@ function getPost(id=0, preview="false") {
 function display(arr) {
     var out = arr["html_content"];
     var title = "Thespian Life in Lockdown - " + arr["title"];
-    document.getElementsByClassName("entry-title").innerHTML = title;
+    document.getElementsByClassName("entry-title")[0].innerHTML = title;
     document.getElementById("sp_blog_content").innerHTML = out;
 }
