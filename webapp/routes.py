@@ -25,6 +25,18 @@ def parse_date_time(string1):
 def get_time_stamp():
 	return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
+def nice_date(date):
+	output = ""
+	date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+	output += date_obj.strftime("%a %b %-d")
+	day = int(date_obj.strftime("%-d"))
+	if 4 <= day <= 20 or 24 <= day <= 30:
+		suffix = "th"
+	else:
+		suffix = ["st", "nd", "rd"][day % 10 - 1]
+	output += suffix
+	output += date_obj.strftime(" %y")
+	return output
 
 def gen_nav():
 	nav.Bar('guest', [
@@ -175,7 +187,6 @@ def sp_post():
 		posts_table = """
 		<table>
 			<tr>
-				<th>Post ID</th>
 				<th>Title</th>
 				<th>Date</th>
 				<th>Author</th>
@@ -186,9 +197,8 @@ def sp_post():
 			for post in posts:
 				posts_table += f"""
 					<tr onclick="window.location+='&post={post.id}';">
-						<td>{post.id}</td>
 						<td>{post.title}</td>
-						<td>{post.date}</td>
+						<td>{nice_date(post.date)}</td>
 						<td>{post.author}</td>
 						<td>{post.category}</td>
 					</tr>
@@ -197,9 +207,8 @@ def sp_post():
 			for post in posts:
 				posts_table += f"""
 					<tr onclick="window.location='?post={post.id}';">
-						<td>{post.id}</td>
 						<td>{post.title}</td>
-						<td>{post.date}</td>
+						<td>{nice_date(post.date)}</td>
 						<td>{post.author}</td>
 						<td>{post.category}</td>
 					</tr>
