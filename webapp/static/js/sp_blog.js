@@ -1,5 +1,5 @@
 function getPost(id=0) {
-    if (id != 0) {
+    if (id >= 0) {
         var xmlhttp = new XMLHttpRequest();
         var url = 'http://larby.co.uk/sp-post?src=js&post=' + id;
 
@@ -13,7 +13,7 @@ function getPost(id=0) {
         xmlhttp.open("GET", url, true);
         xmlhttp.send();
     } else {
-        display({"html_content": "List of Posts"})
+        display({"html_content": "Error"})
     }
 }
 
