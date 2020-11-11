@@ -1,7 +1,7 @@
-function getPost(id=0) {
+function getPost(id=0, preview=false) {
     if (id >= 0) {
         var xmlhttp = new XMLHttpRequest();
-        var url = 'http://larby.co.uk/sp-post?src=js&post=' + id;
+        var url = 'http://larby.co.uk/sp-post?src=js&post=' + id + "&preview=" + preview;
 
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {

@@ -154,6 +154,7 @@ def about():
 def sp_post():
 	post_id = request.args.get('post', default=0, type=int)
 	request_src = request.args.get('src', default="", type=str)
+	preview = request.args.get('preview', default=False, type=bool)
 	print(post_id)
 	valid_ids_db = SPPost.query.with_entities(SPPost.id).all()
 	valid_ids = []
@@ -181,16 +182,28 @@ def sp_post():
 				<th>Category</th>
 			</tr>
 		"""
-		for post in posts:
-			posts_table += f"""
-				<tr onclick="window.location='#?post={post.id}';">
-					<td>{post.id}</td>
-					<td>{post.title}</td>
-					<td>{post.date}</td>
-					<td>{post.author}</td>
-					<td>{post.category}</td>
-				</tr>
-			"""
+		if preview:
+			for post in posts:
+				posts_table += f"""
+					<tr onclick="window.location='&post={post.id}';">
+						<td>{post.id}</td>
+						<td>{post.title}</td>
+						<td>{post.date}</td>
+						<td>{post.author}</td>
+						<td>{post.category}</td>
+					</tr>
+				"""
+		else:
+			for post in posts:
+				posts_table += f"""
+					<tr onclick="window.location='?post={post.id}';">
+						<td>{post.id}</td>
+						<td>{post.title}</td>
+						<td>{post.date}</td>
+						<td>{post.author}</td>
+						<td>{post.category}</td>
+					</tr>
+				"""
 		posts_table += "</table>"
 		return {"html_content": posts_table}
 		# return posts_table
