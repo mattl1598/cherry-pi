@@ -38,7 +38,7 @@ def nice_date(date):
 	else:
 		suffix = ["st", "nd", "rd"][day % 10 - 1]
 	output += suffix
-	output += date_obj.strftime(" %y")
+	output += date_obj.strftime(" %Y")
 	return output
 
 def gen_nav():
