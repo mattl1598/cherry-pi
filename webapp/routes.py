@@ -169,7 +169,7 @@ def about():
 def sp_post():
 	post_id = request.args.get('post', default=0, type=int)
 	request_src = request.args.get('src', default="", type=str)
-	preview = request.args.get('preview', default=False, type=bool)
+	preview = request.args.get('preview', default="false", type=str)
 	print(post_id)
 	valid_ids_db = SPPost.query.with_entities(SPPost.id).all()
 	valid_ids = []
@@ -190,18 +190,18 @@ def sp_post():
 		posts_table = """
 		<table>
 			<tr>
-				<th>Title</th>
 				<th>Date</th>
+				<th>Title</th>
 				<th>Author</th>
 				<th>Category</th>
 			</tr>
 		"""
-		if preview:
+		if preview == "true":
 			for post in posts:
 				posts_table += f"""
 					<tr onclick="window.location+='&post={post.id}';">
-						<td>{post.title}</td>
 						<td>{nice_date(post.date)}</td>
+						<td>{post.title}</td>
 						<td>{post.author}</td>
 						<td>{post.category}</td>
 					</tr>
@@ -210,8 +210,8 @@ def sp_post():
 			for post in posts:
 				posts_table += f"""
 					<tr onclick="window.location='?post={post.id}';">
-						<td>{post.title}</td>
 						<td>{nice_date(post.date)}</td>
+						<td>{post.title}</td>
 						<td>{post.author}</td>
 						<td>{post.category}</td>
 					</tr>

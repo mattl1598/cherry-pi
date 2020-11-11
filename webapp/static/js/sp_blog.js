@@ -1,4 +1,4 @@
-function getPost(id=0, preview=false) {
+function getPost(id=0, preview="false") {
     if (id >= 0) {
         var xmlhttp = new XMLHttpRequest();
         var url = 'http://larby.co.uk/sp-post?src=js&post=' + id + "&preview=" + preview;
