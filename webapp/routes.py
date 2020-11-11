@@ -27,7 +27,10 @@ def get_time_stamp():
 
 def nice_date(date):
 	output = ""
-	date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+	if type(date) == str:
+		date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+	else:
+		date_obj = date
 	output += date_obj.strftime("%a %b %-d")
 	day = int(date_obj.strftime("%-d"))
 	if 4 <= day <= 20 or 24 <= day <= 30:
