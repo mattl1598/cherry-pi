@@ -17,3 +17,13 @@ function display(arr) {
     var out = arr["html_content"];
     document.getElementById("sp_blog_content").innerHTML = out;
 }
+
+function get_sp_post(id) {
+    var url = 'http://larby.co.uk/sp-post?src=js&post=' + id;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            var myArr = JSON.parse(data);
+            display(myArr);
+        });
+}
