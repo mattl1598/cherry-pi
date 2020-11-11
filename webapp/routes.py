@@ -185,7 +185,7 @@ def sp_post():
 		if preview:
 			for post in posts:
 				posts_table += f"""
-					<tr onclick="window.location='&post={post.id}';">
+					<tr onclick="window.location+='&post={post.id}';">
 						<td>{post.id}</td>
 						<td>{post.title}</td>
 						<td>{post.date}</td>
