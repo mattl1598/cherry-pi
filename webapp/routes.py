@@ -242,11 +242,11 @@ def upload():
 		if code in codes:
 			print("valid code")
 			uploaded_file = request.files['file']
-			uploaded_file.save(str(code_db.char) + " " + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):])
+			uploaded_file.save(str(code_db.char) + "-" + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):])
 			filename = form.file.data.filename
 			mime = form.file.data.mimetype
 			file = request.files["file"].read()
-			file_data = {"file_name": str(code_db.char) + " " + str(code) + filename[filename.rfind("."):], "mimetype": mime}
+			file_data = {"file_name": str(code_db.char) + "-" + str(code) + filename[filename.rfind("."):], "mimetype": mime}
 			upload_file(file, file_data, get_creds())
 			code_db.active = "False"
 			db.session.commit()
