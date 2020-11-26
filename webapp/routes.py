@@ -242,7 +242,7 @@ def upload():
 		if code in codes:
 			print("valid code")
 			uploaded_file = request.files['file']
-			uploaded_file.save(str(code_db.char) + "-" + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):])
+			uploaded_file.save(app.config['UPLOAD_FOLDER'] + "/"+ str(code_db.char) + "-" + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):])
 			filename = form.file.data.filename
 			mime = form.file.data.mimetype
 			file = request.files["file"].read()
