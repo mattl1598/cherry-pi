@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user, current_user, AnonymousUserMixi
 from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost
 from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
-from webapp.upload import get_creds, upload_file
+from webapp.upload import get_creds, upload_file, getFileSize
 import datetime
 import base64
 import hashlib
@@ -14,6 +14,7 @@ import ast
 import json
 import requests
 import markdown2
+import copy
 
 api = {"test": {"name": "test", "number": 420}}
 
@@ -236,21 +237,29 @@ def upload():
 		codes.append(tup[0])
 	if request.method == 'POST':
 		code = form.upload_code.data
-		print(code)
-		print(codes)
 		code_db = SPCode.query.filter_by(id=code).first()
 		if code in codes:
-			print("valid code")
-			uploaded_file = request.files['file']
-			uploaded_file.save(app.config['UPLOAD_FOLDER'] + "/"+ str(code_db.char) + "-" + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):])
+			result = ""
+			try:
+				uploaded_file = request.files['file']
+				# file_copy = copy.deepcopy(uploaded_file)
+				path = app.config['UPLOAD_FOLDER'] + "/"+ str(code_db.char) + "-" + str(code) + uploaded_file.filename[uploaded_file.filename.rfind("."):]
+				uploaded_file.save(path)
+				result += "420"
+			except PermissionError:
+				pass
 			filename = form.file.data.filename
 			mime = form.file.data.mimetype
-			file = request.files["file"].read()
+			file = request.files['file'].read()
 			file_data = {"file_name": str(code_db.char) + "-" + str(code) + filename[filename.rfind("."):], "mimetype": mime}
-			upload_file(file, file_data, get_creds())
+			# id = upload_file(file, file_data, get_creds())
+			id = upload_file(path, file_data, get_creds(), path=True)
+			if id is not None:
+				if getFileSize(id) != 0:
+					result += "69"
 			code_db.active = "False"
 			db.session.commit()
-			return redirect(url_for("success"))
+			return redirect(url_for("success_code", result_code=result))
 		else:
 			error = "Invalid Upload Code"
 	return render_template("upload.html", title="Upload", form=form, error=error, link_code=link_code)
@@ -258,7 +267,14 @@ def upload():
 
 @app.route("/sp/upload/success", methods=["GET"])
 def success():
-	return render_template("success.html", title="Success")
+	return render_template("success.html", title="Success", result_code="1337")
+
+
+@app.route("/sp/upload/success/<result_code>", methods=["GET"])
+def success_code(result_code):
+	if result_code == "":
+		result_code = "1337"
+	return render_template("success.html", title="Success", result_code=result_code)
 
 
 @app.route("/sensors")

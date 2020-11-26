@@ -20,8 +20,10 @@ def get_creds():
 
 	return credentials
 
-def upload_file(file_object, file_data, credentials):
+def upload_file(file_object, file_data, credentials, path=False):
 	service = build('drive', 'v3', credentials=credentials)
+
+	# print(file_object)
 
 	folder_metadata = {
 		'name': 'My Test Folder',
@@ -33,15 +35,29 @@ def upload_file(file_object, file_data, credentials):
 		'name': file_data["file_name"],
 		'parents': [cloudFolder['id']]
 	}
+	try:
+		if path:
+			media = MediaFileUpload(file_object, mimetype=file_data["mimetype"], resumable=True)
+		else:
+			media = MediaIoBaseUpload(io.BytesIO(file_object), mimetype=file_data["mimetype"], resumable=True)
+		cloudFile = service.files().create(body=file_metadata, media_body=media).execute()
+		# print(cloudFile)
+		file_id = cloudFile['id']
+		userEmail = "mattl1598@gmail.com"
+		cloudPermissions = service.permissions().create(fileId=cloudFile['id'], body={'type': 'user', 'role': 'reader', 'emailAddress': userEmail}).execute()
+		cp = service.permissions().list(fileId=cloudFile['id']).execute()
+		# print(cp)
+	except Exception as e:
+		print(e)
+		file_id = None
 
-	media = MediaIoBaseUpload(io.BytesIO(file_object), mimetype=file_data["mimetype"], resumable=True)
-	cloudFile = service.files().create(body=file_metadata, media_body=media).execute()
+	return file_id
 
-	print(cloudFile)
 
-	userEmail = "mattl1598@gmail.com"
-	cloudPermissions = service.permissions().create(fileId=cloudFile['id'],
-		body={'type': 'user', 'role': 'reader', 'emailAddress': userEmail}).execute()
+def getFileSize(id):
+	service = build('drive', 'v3', credentials=get_creds())
 
-	cp = service.permissions().list(fileId=cloudFile['id']).execute()
-	print(cp)
+	return service.files().get(fileId=id, fields='size').execute()
+
+
+# print(getFileSize(None))
