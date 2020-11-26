@@ -19,24 +19,26 @@ def load_env():
 	hostname = socket.gethostname()
 	if hostname == 'DESKTOP-MG5V3KN':
 		print("desktop")
+		UPLOAD_FOLDER = 'C:/Users/mattl/Documents/repos/cherry-pi/webapp/uploads'
 		with open("C:/Users/mattl/Documents/repos/cherry-pi/.env", "r") as fp:
 			envs = json.load(fp)
 	elif hostname == 'vps6084.first-root.com':
 		print("webserver")
+		UPLOAD_FOLDER = '/var/www/cherry-pi-prod/webapp/uploads'
 		with open("/var/www/cherry-pi-prod/.env", "r") as fp:
 			envs = json.load(fp)
 	else:
 		print("other")
 		raise FileNotFoundError(".env filepath not specified for this host")
-	return envs
+	return envs, UPLOAD_FOLDER
 
 
-env_vars = load_env()
+env_vars, UPLOAD_FOLDER = load_env()
 
 app = Flask(__name__)
 app.static_folder = 'static'
 
-UPLOAD_FOLDER = './uploads'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config['SECRET_KEY'] = env_vars["secret_key"]
