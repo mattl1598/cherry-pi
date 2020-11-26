@@ -36,6 +36,9 @@ env_vars = load_env()
 app = Flask(__name__)
 app.static_folder = 'static'
 
+UPLOAD_FOLDER = './uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.config['SECRET_KEY'] = env_vars["secret_key"]
 app.config['SQLALCHEMY_DATABASE_URI'] = env_vars["postgresql"]
 
