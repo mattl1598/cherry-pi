@@ -124,6 +124,8 @@ def js_loader(filename):
 		return send_file('/var/www/cherry-pi-prod/webapp/static/js/litter_listens.js')
 	elif filename == "sp_blog.js":
 		return send_file('/var/www/cherry-pi-prod/webapp/static/js/sp_blog.js')
+	elif filename == "sp_comp.js":
+		return send_file('/var/www/cherry-pi-prod/webapp/static/js/sp_comp.js')
 	else:
 		abort(404)
 
