@@ -82,7 +82,7 @@ function ReadForm() {
 	}
 	if (dict2["valid"]) {
 		console.log(dict2);
-		window.location.replace("/testing/submitted.html");
+		window.location.replace(document.getElementById("cc-success-url").value);
 	} else {
 		console.log("Not Valid")
 		for (var id in error_out) {
@@ -91,8 +91,6 @@ function ReadForm() {
 			document.getElementById(error_dict[error_out[id]]["id"]).innerHTML = error_dict[error_out[id]]["message"];
 		}
 	}
-	// alert('test');
-	// window.location.replace("/testing/submitted.html");
 }
 
 function encodeImageFileAsURL(element) {
