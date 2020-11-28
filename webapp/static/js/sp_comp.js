@@ -4,7 +4,7 @@ function ReadForm() {
 		"cc-email": {"type": "text", "regex": "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,5})$"},
 		"cc-adults-name": {"type": "text", "regex": "^([A-Za-z\\-]+)(\\s[A-Za-z\\-]+)+$"},
 		"cc-childs-name": {"type": "text", "regex": "^[A-z\\-]+$"},
-		"cc-childs-age": {"type": "number", "max": 11},
+		"cc-childs-age": {"type": "number", "min": 0, "max": 11},
 		"cc-image": {"type": "image"},
 		"cc-tcs": {"type": "checkbox", "required": true},
 		"cc-mail-list": {"type": "checkbox", "required": false}
@@ -13,7 +13,7 @@ function ReadForm() {
 		"cc-email": {"id": "email_error", "border-id": "cc-email", "message": "Please enter a valid email."},
 		"cc-adults-name": {"id": "fullname_error", "border-id": "cc-adults-name", "message": "Please enter the Parent/Guardians full name."},
 		"cc-childs-name": {"id": "firstname_error", "border-id": "cc-childs-name", "message": "Only enter the childs first name."},
-		"cc-childs-age": {"id": "age_error", "border-id": "cc-childs-age", "message": "Childs age must be below 11 to enter."},
+		"cc-childs-age": {"id": "age_error", "border-id": "cc-childs-age", "message": "Childs age must be between 0 and 11 to enter."},
 		"cc-image": {"id": "file_error", "border-id": "cc-file", "message": "Please select a png or jpg/jpeg image file."},
 		"cc-tcs": {"id": "tcs_error", "border-id": "cc-tcs", "message": "You must agree to the Terms and conditions to enter."}
 	};
@@ -60,7 +60,7 @@ function ReadForm() {
 
 		} else if (dict1[id]["type"] == "number") {
 			val = Number(element.value);
-			if (val > dict1[id]["max"] || element.value == "") {
+			if (val > dict1[id]["max"] || element.value == "" || val < dict1[id]["min"]) {
 				dict2["valid"] = false;
 				// console.log(id);
 				error_out.push(id);
