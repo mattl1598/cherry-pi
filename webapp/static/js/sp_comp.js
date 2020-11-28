@@ -113,7 +113,9 @@ function removeBR() {
 	var list = formElement.getElementsByTagName("br");
 	console.log(list);
 	for (var element of list) {
-		console.log(element);
-		element.remove();
+		if (element.className == "") {
+			console.log(element);
+			formElement.removeChild(element);
+		}
 	}
 }
