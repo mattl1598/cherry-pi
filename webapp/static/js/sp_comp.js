@@ -110,14 +110,35 @@ document.addEventListener("DOMContentLoaded", function() {removeBR()});
 function removeBR() {
 	console.log("remove br")
 	var formElement = document.getElementById("cc-form");
-	var list = formElement.getElementsByTagName("br");
-	console.log(list.length);
+	var collection = formElement.getElementsByTagName("br");
+	var list = Array.from(collection)
+	console.log(list.length)
+	console.log(list)
 	for (var element of list) {
-		if (element.className == "") {
-			console.log(element);
-			element.remove();
+		if (element.className !== "") {
+			var index = list.indexOf(element);
+			if (index > -1) {
+				list.splice(index, 1);
+			}
 		}
 	}
-	var list = formElement.getElementsByTagName("br");
 	console.log(list.length);
+	for (var element of list) {
+		console.log(element);
+		element.remove();
+	}
+
+	var collection = formElement.getElementsByTagName("br");
+	var list = Array.from(collection)
+
+	for (var element of list) {
+		if (element.className !== "") {
+			var index = list.indexOf(element);
+			if (index > -1) {
+				list.splice(index, 1);
+			}
+		}
+	}
+	console.log(list.length)
+	console.log(list)
 }
