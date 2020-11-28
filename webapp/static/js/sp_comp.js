@@ -15,7 +15,7 @@ function ReadForm() {
 		"cc-childs-name": {"id": "firstname_error", "border-id": "cc-childs-name", "message": "Only enter the childs first name."},
 		"cc-childs-age": {"id": "age_error", "border-id": "cc-childs-age", "message": "Childs age must be below 11 to enter."},
 		"cc-image": {"id": "file_error", "border-id": "cc-file", "message": "Please select a png or jpg/jpeg image file."},
-		"cc-tcs": {"id": "tcs_error", "border-id": "cc-adults-name", "message": "You must agree to the Terms and conditions to enter."}
+		"cc-tcs": {"id": "tcs_error", "border-id": "cc-tcs", "message": "You must agree to the Terms and conditions to enter."}
 	};
 
 	var dict2 = {"valid": true};
@@ -40,7 +40,7 @@ function ReadForm() {
 			} else {
 				if (dict1[id]["required"]){
 					dict2["valid"] = false;
-					console.log(id);
+					// console.log(id);
 					error_out.push(id);
 				} else {
 					val = false;
@@ -53,7 +53,7 @@ function ReadForm() {
 				var re = RegExp(dict1[id]["regex"]);
 				if (!re.test(val)) {
 					dict2["valid"] = false;
-					console.log(id);
+					// console.log(id);
 					error_out.push(id);
 				}
 			}
@@ -62,18 +62,18 @@ function ReadForm() {
 			val = Number(element.value);
 			if (val > dict1[id]["max"] || element.value == "") {
 				dict2["valid"] = false;
-				console.log(id);
+				// console.log(id);
 				error_out.push(id);
 			}
 		} else if (dict1[id]["type"] == "image"){
 			val = element.value;
 			var sub = val.substring(0, 12);
-			console.log(sub)
+			// console.log(sub)
 			if (sub == "data:image/p" || sub == "data:image/j") {
-				console.log("valid image")
+				// console.log("valid image")
 			} else {
 				dict2["valid"] = false;
-				console.log(id);
+				// console.log(id);
 				error_out.push(id);
 			}
 
@@ -81,12 +81,12 @@ function ReadForm() {
 		dict2[id] = val;
 	}
 	if (dict2["valid"]) {
-		console.log(dict2);
+		// console.log(dict2);
 		window.location.replace(document.getElementById("cc-success-url").value);
 	} else {
-		console.log("Not Valid")
+		// console.log("Not Valid")
 		for (var id in error_out) {
-			console.log(error_out[id]);
+			// console.log(error_out[id]);
 			document.getElementById(error_dict[error_out[id]]["border-id"]).classList.add('cc-error-border');
 			document.getElementById(error_dict[error_out[id]]["id"]).innerHTML = error_dict[error_out[id]]["message"];
 		}
@@ -100,7 +100,7 @@ function encodeImageFileAsURL(element) {
 	var reader = new FileReader();
 	reader.onloadend = function() {
 		document.getElementById("cc-image").value = reader.result
-		console.log('RESULT', reader.result)
+		// console.log('RESULT', reader.result)
 	}
 	reader.readAsDataURL(file);
 }
@@ -108,12 +108,12 @@ function encodeImageFileAsURL(element) {
 document.addEventListener("DOMContentLoaded", function() {removeBR()});
 
 function removeBR() {
-	console.log("remove br")
+	// console.log("remove br")
 	var formElement = document.getElementById("cc-form");
 	var collection = formElement.getElementsByTagName("br");
 	var list = Array.from(collection)
-	console.log(list.length)
-	console.log(list)
+	// console.log(list.length)
+	// console.log(list)
 	for (var element of list) {
 		if (element.className !== "") {
 			var index = list.indexOf(element);
@@ -122,9 +122,9 @@ function removeBR() {
 			}
 		}
 	}
-	console.log(list.length);
+	// console.log(list.length);
 	for (var element of list) {
-		console.log(element);
+		// console.log(element);
 		element.remove();
 	}
 
@@ -139,6 +139,6 @@ function removeBR() {
 			}
 		}
 	}
-	console.log(list.length)
-	console.log(list)
+	// console.log(list.length)
+	// console.log(list)
 }
