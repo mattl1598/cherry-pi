@@ -91,6 +91,8 @@ function ReadForm() {
 			document.getElementById(error_dict[error_out[id]]["id"]).innerHTML = error_dict[error_out[id]]["message"];
 		}
 	}
+	// alert('test');
+	// window.location.replace("/testing/submitted.html");
 }
 
 function encodeImageFileAsURL(element) {
@@ -101,4 +103,17 @@ function encodeImageFileAsURL(element) {
 		console.log('RESULT', reader.result)
 	}
 	reader.readAsDataURL(file);
+}
+
+document.addEventListener("DOMContentLoaded", function() {removeBR()});
+
+function removeBR() {
+	console.log("remove br")
+	var formElement = document.getElementById("cc-form");
+	var list = formElement.getElementsByTagName("br");
+	console.log(list);
+	for (var element of list) {
+		console.log(element);
+		element.remove();
+	}
 }
