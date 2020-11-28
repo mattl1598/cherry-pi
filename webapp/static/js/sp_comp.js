@@ -2,6 +2,7 @@ function ReadForm() {
 	var x = document.getElementById("cc-form");
 	var dict1 = {
 		"cc-email": {"type": "text", "regex": "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,5})$"},
+		"cc-conf-email": {"type": "text_match", "matches": "cc-email"},
 		"cc-adults-name": {"type": "text", "regex": "^([A-Za-z\\-]+)(\\s[A-Za-z\\-]+)+$"},
 		"cc-childs-name": {"type": "text", "regex": "^[A-z\\-]+$"},
 		"cc-childs-age": {"type": "number", "min": 0, "max": 11},
@@ -11,6 +12,7 @@ function ReadForm() {
 	};
 	var error_dict = {
 		"cc-email": {"id": "email_error", "border-id": "cc-email", "message": "Please enter a valid email."},
+		"cc-conf-email": {"id": "email_conf_error", "border-id": "cc-conf-email", "message": "Email addresses must match."},
 		"cc-adults-name": {"id": "fullname_error", "border-id": "cc-adults-name", "message": "Please enter the Parent/Guardians full name."},
 		"cc-childs-name": {"id": "firstname_error", "border-id": "cc-childs-name", "message": "Only enter the childs first name."},
 		"cc-childs-age": {"id": "age_error", "border-id": "cc-childs-age", "message": "Childs age must be between 0 and 11 to enter."},
@@ -57,7 +59,13 @@ function ReadForm() {
 					error_out.push(id);
 				}
 			}
-
+		} else if (dict1[id]["type"] == "text_match") {
+			val = element.value;
+			if (val == dict2[dict1[id]["matches"]]) {
+				dict2["valid"] = false;
+				// console.log(id);
+				error_out.push(id);
+			}
 		} else if (dict1[id]["type"] == "number") {
 			val = Number(element.value);
 			if (val > dict1[id]["max"] || element.value == "" || val < dict1[id]["min"]) {
