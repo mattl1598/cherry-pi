@@ -111,11 +111,13 @@ function removeBR() {
 	console.log("remove br")
 	var formElement = document.getElementById("cc-form");
 	var list = formElement.getElementsByTagName("br");
-	console.log(list);
+	console.log(list.length);
 	for (var element of list) {
 		if (element.className == "") {
 			console.log(element);
 			formElement.removeChild(element);
 		}
 	}
+	var list = formElement.getElementsByTagName("br");
+	console.log(list.length);
 }
