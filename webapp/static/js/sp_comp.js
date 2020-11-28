@@ -61,7 +61,7 @@ function ReadForm() {
 			}
 		} else if (dict1[id]["type"] == "text_match") {
 			val = element.value;
-			if (val == dict2[dict1[id]["matches"]]) {
+			if (val !== dict2[dict1[id]["matches"]]) {
 				dict2["valid"] = false;
 				// console.log(id);
 				error_out.push(id);
