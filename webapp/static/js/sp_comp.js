@@ -109,7 +109,7 @@ function uploadForm(dict, x) {
 	var y = document.getElementById("cc-uploading");
 	y.style.display = "block";
 	var xmlhttp = new XMLHttpRequest();
-	var url = "http://localhost:5000/sp-entry";
+	var url = "http://larby.co.uk/sp-entry";
 
     xmlhttp.open("POST", url);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
