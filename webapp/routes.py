@@ -3,7 +3,7 @@ import sys
 from webapp import app, db, nav, env_vars
 from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
-from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost
+from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost, SPEntry
 from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
 from webapp.upload import get_creds, upload_file, getFileSize
@@ -14,7 +14,10 @@ import ast
 import json
 import requests
 import markdown2
+from os import path
+from urllib.request import urlretrieve
 import copy
+from imgur_python import Imgur
 
 api = {"test": {"name": "test", "number": 420}}
 
@@ -164,9 +167,52 @@ def sound(filename):
 		abort(404)
 
 
+@app.route("/sp-entry", methods=["POST"])
+def cc_entry():
+	try:
+		req_data = request.get_json()
+		image = req_data["cc-image"]
+		if image[0:12] == "data:image/p":
+			ext = ".png"
+		else:
+			ext = ".jpg"
+		del(req_data["cc-image"])
+		filename, m = urlretrieve(image)
+		print(filename)
+		print(ext)
+		print(req_data)
+
+		# imgur upload stuff
+		imgur_client = Imgur(app.env_vars["imgur"])
+		file = path.realpath(filename)
+		title = 'new entry'
+		description = 'new entry'
+		album = 'YUE0mAD'
+
+		childname_list = list(req_data["cc-childs-name"])
+		childname_list[0] = childname_list[0].upper()
+		childname = "".join(childname_list)
+
+		response = imgur_client.image_upload(file, title, description, album)
+		img_id = response['response']['data']['id']
+		response = imgur_client.image_update(img_id, "Entry: " + img_id, "Entry ID: " + img_id + " \n" + childname + " Age: " + str(req_data["cc-childs-age"]))
+		print(response)
+
+		new_entry = SPEntry(id=img_id, email=req_data["cc-email"], adults_name=req_data["cc-adults-name"], childs_name=childname, childs_age=req_data["cc-childs-age"], image=img_id, mailing_list=req_data["cc-mail-list"])
+
+		db.session.add(new_entry)
+		db.session.commit()
+
+	except Exception as e:
+		print(e)
+		return {"response_code": 500}
+
+	return {"response_code": 200}
+
 @app.route("/about")
 def about():
 	return render_template('about.html', title="About")
+
 
 @app.route("/sp-post")
 def sp_post():

@@ -67,6 +67,20 @@ def now():
 	return datetime.utcnow().strftime()
 
 
+class SPEntry(db.Model):
+	id = db.Column(db.Text, primary_key=True)
+	date = db.Column(db.DateTime, nullable=False, default=get_date_time())
+	email = db.Column(db.Text, nullable=False)
+	adults_name = db.Column(db.Text, nullable=False)
+	childs_name = db.Column(db.Text, nullable=False)
+	childs_age = db.Column(db.Text, nullable=False)
+	image = db.Column(db.Text, nullable=False)
+	mailing_list = db.Column(db.Boolean, nullable=False)
+
+	def __repr__(self):
+		return f"SPEntry('{self.id}', '{self.date}', '{self.email}', '{self.adults_name}', '{self.childs_name}', '{self.childs_age}', '{self.image}', '{self.mailing_list}')"
+
+
 class SPPost(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	date = db.Column(db.DateTime, nullable=False, default=now)

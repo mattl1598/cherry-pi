@@ -49,7 +49,9 @@ app.jinja_env.globals.update(test=test_script, date=datetime.datetime.now, key64
 
 cors = CORS(app, resources={r"/js/*": {"origins": "http://silchesterplayers.org"},
 							r"/listens/*": {"origins": "http://silchesterplayers.org"},
-							r"/sp-post*": {"origins": "http://silchesterplayers.org"}
+							r"/sp-post*": {"origins": "http://silchesterplayers.org"},
+							r"/sp-entry": {"origins": "http://localhost:63342"},
+							r"/sp-entry": {"origins": "http://silchesterplayers.org"}
 							})
 
 db = SQLAlchemy(app)
@@ -57,6 +59,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 nav = Navigation()
 nav.init_app(app)
+
+app.env_vars = env_vars
 
 from webapp import routes
 

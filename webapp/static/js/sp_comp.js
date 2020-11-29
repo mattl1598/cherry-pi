@@ -1,5 +1,6 @@
 function ReadForm() {
 	var x = document.getElementById("cc-form");
+
 	var dict1 = {
 		"cc-email": {"type": "text", "regex": "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,5})$"},
 		"cc-conf-email": {"type": "text_match", "matches": "cc-email"},
@@ -90,7 +91,7 @@ function ReadForm() {
 	}
 	if (dict2["valid"]) {
 		// console.log(dict2);
-		window.location.replace(document.getElementById("cc-success-url").value);
+		var myArr = uploadForm(dict2, x);
 	} else {
 		// console.log("Not Valid")
 		for (var id in error_out) {
@@ -103,14 +104,49 @@ function ReadForm() {
 	// window.location.replace("/testing/submitted.html");
 }
 
-function encodeImageFileAsURL(element) {
-	var file = element.files[0];
-	var reader = new FileReader();
-	reader.onloadend = function() {
-		document.getElementById("cc-image").value = reader.result
-		// console.log('RESULT', reader.result)
+function uploadForm(dict, x) {
+	x.style.display = "none";
+	var y = document.getElementById("cc-uploading");
+	y.style.display = "block";
+	var xmlhttp = new XMLHttpRequest();
+	var url = "http://localhost:5000/sp-entry";
+
+    xmlhttp.open("POST", url);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xmlhttp.send(JSON.stringify(dict));
+
+	xmlhttp.onreadystatechange = function() {
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			    var myArr = JSON.parse(this.responseText);
+			    console.log(myArr);
+				if (myArr["response_code"] == 200) {
+					window.location.replace(document.getElementById("cc-success-url").value);
+					console.log("Done")
+				} else {
+					y.style.display = "none";
+					x.style.display = "flex";
+					alert("Something went wrong. Please try again. \n" +
+					"If this keeps happening, contact Silchester Players on Facebook or Twitter.")
+				}
+		    }
+		};
 	}
-	reader.readAsDataURL(file);
+}
+
+function encodeImageFileAsURL(element) {
+    if(element.files[0].size > 9961472){
+       alert("File is too big!");
+       this.value = "";
+    } else {
+        var file = element.files[0];
+		var reader = new FileReader();
+		reader.onloadend = function() {
+			document.getElementById("cc-image").value = reader.result
+			// console.log('RESULT', reader.result)
+		}
+		reader.readAsDataURL(file);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {removeBR()});
