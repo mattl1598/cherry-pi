@@ -36,9 +36,6 @@ function set_url_query() {
     let hours_now = parseInt(diff_hours(dateNow, date2021));
     let d1 = (hours_now * 2) + parseInt(viewSent.value, 10);
     let d = (d1 * 2) + parseInt(seeked.value, 10);
-    console.log(hours_now)
-    console.log(d1)
-    console.log(d)
     let new_url = window.location.href.split("?")[0].concat("?d=").concat(d.toString(10));
     history.replaceState(null, document.title, new_url);
 }
@@ -51,9 +48,6 @@ function url_query() {
         let data = parseInt(d, 10).toString(2);
         let dSeeked = data.charAt(data.length-1);
         let viewed = data.charAt(data.length-2);
-        console.log(data);
-        console.log(dSeeked);
-        console.log(viewed);
         let hours = parseInt(data.substr(0, data.length-2), 2);
         let dateNow = new Date();
         let date2021 = new Date(2021, 1, 1, 0, 0, 0, 0);
