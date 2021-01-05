@@ -175,8 +175,8 @@ def sound(filename):
 		return send_file('/var/www/cherry-pi-prod/webapp/static/audio/litterpicker.mp3')
 
 	elif filename == "dickwhittington" or filename == "dickwhittington.mp3":
-		response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
-		# response = send_file('/var/www/cherry-pi-prod/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		# response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		response = send_file('/var/www/cherry-pi-prod/webapp/static/audio/dickwhittington.mp3', conditional=True)
 		return response
 	else:
 		abort(404)
