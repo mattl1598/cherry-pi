@@ -21,7 +21,7 @@ function sendView() {
 function viewCounter() {
     if ((document.getElementById("viewSent").value !== "1") && (seeked.value !== "1")) {
         let currentTime = aud.currentTime;
-        if (currentTime >= 30) {
+        if (currentTime >= 600) {
             viewSent.value = "1";
             aud.removeEventListener("timeupdate", viewCounter);
             sendView();
