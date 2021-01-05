@@ -1,7 +1,8 @@
 #!/var/www/cherry-pi-prod/venv
 import sys
 from webapp import app, db, nav, env_vars
-from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file
+from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file, \
+	after_this_request
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost, SPEntry
 from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
@@ -123,12 +124,17 @@ def bse_64(length):
 
 @app.route("/js/<filename>", methods=['GET'])
 def js_loader(filename):
+	fp = app.config['ROOT_FOLDER'] + '/static/js/'
 	if filename == "litter_listens.js":
-		return send_file('/var/www/cherry-pi-prod/webapp/static/js/litter_listens.js')
+		return send_file(fp + 'litter_listens.js')
+	elif filename == "whittington_listens.js":
+		return send_file(fp + 'whittington_listens.js')
 	elif filename == "sp_blog.js":
-		return send_file('/var/www/cherry-pi-prod/webapp/static/js/sp_blog.js')
+		return send_file(fp + 'sp_blog.js')
 	elif filename == "sp_comp.js":
-		return send_file('/var/www/cherry-pi-prod/webapp/static/js/sp_comp.js')
+		return send_file(fp + 'sp_comp.js')
+	elif filename == "whittington_player.js":
+		return send_file(fp + 'whittington_player.js')
 	else:
 		abort(404)
 
@@ -139,6 +145,11 @@ def listens(filename):
 		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
 		no_of_listens = int(data["values"]["Litter Picker"]["value"])
 		return {"listens": no_of_listens}
+	elif filename == "dickwhittington" or filename == "dickwhittington.mp3":
+		sensor_id = "Ld5zbQgU-vcqM-rV"
+		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
+		no_of_listens = int(data["values"]["Dick Whittington"]["value"])
+		return {"listens": no_of_listens}
 	else:
 		abort(404)
 
@@ -148,9 +159,8 @@ def sound(filename):
 		sensor_id = "Ld5zbQgU-vcqM-rV"
 		time_stamp = str(get_time_stamp())
 		api_key = "t6DLYRPnaevdbq1vVL_jkkT0XOMMFAR1XRLDeeDF-8rApzV-KZXAdtXX5dNObOLI"
-		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
 		header = {"content-type": "application/json"}
-
+		data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
 		data["values"]["Litter Picker"]["value"] += 1
 
 		request_json = {
@@ -163,8 +173,42 @@ def sound(filename):
 		r = requests.put('http://larby.co.uk/sensor-api/update/', data=json.dumps(request_json), headers=header)
 
 		return send_file('/var/www/cherry-pi-prod/webapp/static/audio/litterpicker.mp3')
+
+	elif filename == "dickwhittington" or filename == "dickwhittington.mp3":
+		response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		# response = send_file('/var/www/cherry-pi-prod/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		return response
 	else:
 		abort(404)
+
+
+@app.route("/test")
+def whittington():
+	return render_template("test.html")
+
+
+@app.route("/soundcounter/<filename>")
+def sound_counter(filename):
+	sensor_id = "Ld5zbQgU-vcqM-rV"
+	time_stamp = str(get_time_stamp())
+	api_key = "t6DLYRPnaevdbq1vVL_jkkT0XOMMFAR1XRLDeeDF-8rApzV-KZXAdtXX5dNObOLI"
+	data = ast.literal_eval(Sensor.query.filter_by(id=sensor_id).first().desc)
+	header = {"content-type": "application/json"}
+	if filename == "dickwhittington" or filename == "dickwhittington.mp3":
+		data["values"]["Dick Whittington"]["value"] += 1
+		print(data["values"]["Dick Whittington"]["value"])
+		request_json = {
+			"sensor_id": sensor_id,
+			"time_stamp": str(time_stamp),
+			"verification": hashlib.sha256(str(time_stamp + api_key).encode()).hexdigest(),
+			"data": data
+		}
+
+		r = requests.put('http://larby.co.uk/sensor-api/update/', data=json.dumps(request_json), headers=header)
+	else:
+		pass
+
+	return '', 204
 
 
 @app.route("/sp-entry", methods=["POST"])
