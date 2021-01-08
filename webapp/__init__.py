@@ -35,8 +35,15 @@ def load_env():
 		ROOT_FOLDER = '/var/www/cherry-pi-prod/webapp'
 		with open("/var/www/cherry-pi-prod/.env", "r") as fp:
 			envs = json.load(fp)
+	elif hostname == 'BAIN':
+		print('testserver')
+		UPLOAD_FOLDER = '/home/mattl1598/project-cherry-pi/webapp/uploads'
+		ROOT_FOLDER = '/home/mattl1598/project-cherry-pi/webapp'
+		with open('/home/mattl1598/project-cherry-pi/.env', "r") as fp:
+			envs = json.load(fp)
 	else:
 		print("other")
+		print(hostname)
 		raise FileNotFoundError(".env filepath not specified for this host")
 	return envs, UPLOAD_FOLDER, ROOT_FOLDER
 
