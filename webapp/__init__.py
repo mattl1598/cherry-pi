@@ -53,7 +53,6 @@ env_vars, UPLOAD_FOLDER, ROOT_FOLDER = load_env()
 app = Flask(__name__)
 app.static_folder = 'static'
 
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ROOT_FOLDER'] = ROOT_FOLDER
 
