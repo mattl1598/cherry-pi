@@ -62,9 +62,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = env_vars["postgresql"]
 app.jinja_env.globals.update(test=test_script, date=datetime.datetime.now, key64=key_64, dump=json.dumps, int=int,
 								isinstance=isinstance)
 
-cors = CORS(app, resources={r"/js/*": {"origins": "http://silchesterplayers.org"},
-							r"/listens/*": {"origins": "http://silchesterplayers.org"},
-							r"/soundcounter/*": {"origins": "http://silchesterplayers.org"},
+cors = CORS(app, resources={r"/js/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
+							r"/listens/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
+							r"/soundcounter/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
 							r"/sp-post*": {"origins": "http://silchesterplayers.org"},
 							r"/sp-entry": {"origins": "http://silchesterplayers.org"}
 							})
