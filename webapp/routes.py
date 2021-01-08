@@ -171,6 +171,7 @@ def listens(filename):
 
 @app.route("/sound/<filename>", methods=['GET'])
 def sound(filename):
+	fp = app.config['ROOT_FOLDER'] + '/static/audio/'
 	if filename == "litterpicker" or filename == "litterpicker.mp3":
 		sensor_id = "Ld5zbQgU-vcqM-rV"
 		time_stamp = str(get_time_stamp())
@@ -188,11 +189,11 @@ def sound(filename):
 
 		r = requests.put('http://larby.co.uk/sensor-api/update/', data=json.dumps(request_json), headers=header)
 
-		return send_file('/var/www/cherry-pi-prod/webapp/static/audio/litterpicker.mp3')
+		return send_file(fp + 'litterpicker.mp3')
 
 	elif filename == "dickwhittington" or filename == "dickwhittington.mp3":
 		# response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
-		response = send_file('/var/www/cherry-pi-prod/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		response = send_file(fp + 'dickwhittington.mp3', conditional=True)
 		return response
 	else:
 		abort(404)
