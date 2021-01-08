@@ -4,6 +4,7 @@ from webapp import app, db, nav, env_vars
 from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file, \
 	after_this_request
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
+from flask_minify import minify, decorators
 from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost, SPEntry
 from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
@@ -135,6 +136,22 @@ def js_loader(filename):
 		return send_file(fp + 'sp_comp.js')
 	elif filename == "whittington_player.js":
 		return send_file(fp + 'whittington_player.js')
+	else:
+		abort(404)
+
+@app.route("/jss/<filename>", methods=['GET'])
+def js_loader_secure(filename):
+	fp = app.config['ROOT_FOLDER'] + '/static/js/'
+	if filename == "litter_listens.js":
+		return send_file(fp + 's_litter_listens.js')
+	elif filename == "whittington_listens.js":
+		return send_file(fp + 's_whittington_listens.js')
+	elif filename == "sp_blog.js":
+		return send_file(fp + 's_sp_blog.js')
+	elif filename == "sp_comp.js":
+		return send_file(fp + 's_sp_comp.js')
+	elif filename == "whittington_player.js":
+		return send_file(fp + 's_whittington_player.js')
 	else:
 		abort(404)
 
