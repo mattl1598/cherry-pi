@@ -195,6 +195,10 @@ def sound(filename):
 		# response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
 		response = send_file(fp + 'dickwhittington.mp3', conditional=True)
 		return response
+	elif filename == "makingofDW" or filename == "makingofDW.mp3":
+		# response = send_file('/mnt/c/users/mattl/documents/gitlab/project-cherry-pi/webapp/static/audio/dickwhittington.mp3', conditional=True)
+		response = send_file(fp + 'makingofDW2.mp3', conditional=True)
+		return response
 	else:
 		abort(404)
 
