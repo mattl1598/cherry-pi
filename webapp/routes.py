@@ -378,11 +378,12 @@ def sp_post():
 		else:
 			return render_template('sppost.html', post=post)
 	elif post_id == 0:
-		posts = SPPost.query.all()
+		posts = SPPost.query.order_by(SPPost.date.desc()).all()
+		print(posts)
 		posts_table = """
 		<table>
 			<tr>
-				<th>Date</th>
+				
 				<th>Title</th>
 				<th>Author</th>
 				<th>Category</th>
@@ -402,7 +403,7 @@ def sp_post():
 			for post in posts:
 				posts_table += f"""
 					<tr onclick="window.location='?post={post.id}';">
-						<td>{nice_date(post.date)}</td>
+						
 						<td>{post.title}</td>
 						<td>{post.author}</td>
 						<td>{post.category}</td>
