@@ -66,8 +66,8 @@ cors = CORS(app, resources={r"/js/*": {"origins": ["http://silchesterplayers.org
 							r"/jss/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
 							r"/listens/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
 							r"/soundcounter/*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
-							r"/sp-post*": {"origins": "http://silchesterplayers.org"},
-							r"/sp-entry": {"origins": "http://silchesterplayers.org"}
+							r"/sp-post*": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]},
+							r"/sp-entry": {"origins": ["http://silchesterplayers.org", "https://silchesterplayers.org"]}
 							})
 
 db = SQLAlchemy(app)
