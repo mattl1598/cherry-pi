@@ -81,6 +81,34 @@ class SPEntry(db.Model):
 		return f"SPEntry('{self.id}', '{self.date}', '{self.email}', '{self.adults_name}', '{self.childs_name}', '{self.childs_age}', '{self.image}', '{self.mailing_list}')"
 
 
+class SPUser(UserMixin, db.Model):
+	id = db.Column(db.String(16), primary_key=True)
+	username = db.Column(db.String(15), unique=True)
+	firstname = db.Column(db.String(20))
+	lastname = db.Column(db.String(30))
+	email = db.Column(db.String(120), unique=True)
+	role = db.Column(db.String(40), nullable=False)
+	password_hash = db.Column(db.String(128))
+	password = db.Column(db.String(60))
+	active_features = db.Column(db.Text, nullable=False, default="[]")
+	homepage_order = db.Column(db.Text, nullable=False, default="{}")
+	# sp_post = db.relationship('SPPost', backref='spuser', lazy=True)
+
+	def __repr__(self):
+		return f"User('{self.id}', '{self.firstname}', '{self.lastname}', '{self.username}', '{self.role}', '{self.email}')"
+
+	@property
+	def password(self):
+		raise AttributeError('password is not a readable attribute')
+
+	@password.setter
+	def password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def verify_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
+
 class SPPost(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	date = db.Column(db.DateTime, nullable=False, default=now)

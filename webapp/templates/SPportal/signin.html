@@ -1,0 +1,79 @@
+<head>
+	<link rel="stylesheet" type=text/css href="{{ url_for('css', filename='portal-login.css') }}">
+	<!--get some fonts-->
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet"> <!--Roboto-->
+	<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"> <!--Bebas Neue-->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> <!--Poppins-->
+</head>
+
+<body>
+	<div class="contentBlock">
+		<div class="login-tabs" id="login-tabs">
+			<div class="tab">
+			  <button class="tablinks" onclick="openTab(event, 'login')" id={% if signup_q_key=="" %}"defaultOpen"{% else %}"defaultClosed"{% endif %}>Login</button>
+			  <button class="tablinks" onclick="openTab(event, 'register')" id={% if signup_q_key!="" %}"defaultOpen"{% else %}"defaultClosed"{% endif %}>Register</button>
+			</div>
+
+			<!-- Tab content -->
+			<div class="tabcontentouter">
+				<div id="login" class="tabcontent">
+					<form method="post" action="">
+						{{ login.csrf_token }}
+						<br>
+						{{ login.spl_form_type(value='login') }}
+						{{ login.spl_email(placeholder="Email or Username", class="field") }}
+						{{ login.spl_password(placeholder="Password", class="field") }}
+						{{ login.spl_submit(class="butt") }}
+						<br>
+					</form>
+				</div>
+
+				<div id="register" class="tabcontent">
+					<form method="POST" action="">
+						{{ register.spr_signup_key(value=signup_q_key, class="field") }}
+						{{ register.spr_csrf_token }}
+						{{ register.spr_form_type(value='register') }}
+						<hr/>
+						{{ register.spr_firstname(class="field") }}
+						{{ register.spr_lastname(class="field") }}
+						<hr/>
+						{{ register.spr_username(class="field") }}
+						{{ register.spr_email(class="field") }}
+						<hr/>
+						{{ register.spr_password(class="field") }}
+						{{ register.spr_confirm_password(class="field") }}
+						{{ register.spr_submit(class="butt") }}
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	// Get the element with id="defaultOpen" and click on it
+		document.getElementById("defaultClosed").click();
+		document.getElementById("defaultOpen").click();
+
+		function openTab(evt, tabName) {
+		// Declare all variables
+			var i, tabcontent, tablinks, element;
+
+		// Get all elements with class="open" and hide them
+			tabcontent = document.getElementsByClassName("tabcontent open");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].className = "tabcontent closed";
+			}
+
+		// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+		// Show the current tab, and add an "active" class to the button that opened the tab
+			element = document.getElementById(tabName)
+			element.className = "tabcontent open";
+			evt.currentTarget.className += " active";
+		}
+	</script>
+</body>
+</html>
