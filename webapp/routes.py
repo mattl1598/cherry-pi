@@ -402,7 +402,7 @@ def sp_post():
 		else:
 			for post in posts:
 				posts_table += f"""
-					<tr onclick="window.location='?post={post.id}';">
+					<tr class="clickable" onclick="window.location='?post={post.id}';">
 						
 						<td>{post.title}</td>
 						<td>{post.author}</td>
