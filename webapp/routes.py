@@ -410,7 +410,7 @@ def sp_post():
 					</tr>
 				"""
 		posts_table += "</table>"
-		return {"html_content": posts_table}
+		return {"html_content": posts_table, "title": "undefined"}
 		# return posts_table
 	else:
 		abort(404)
