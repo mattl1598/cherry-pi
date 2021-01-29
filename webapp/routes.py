@@ -2,10 +2,10 @@
 import sys
 from webapp import app, db, nav, env_vars
 from flask import render_template, url_for, request, redirect, session, jsonify, abort, Response, send_file, \
-	after_this_request
+	after_this_request, make_response, flash
 from flask_login import login_user, logout_user, current_user, AnonymousUserMixin, login_required
-from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost, SPEntry
-from webapp.forms import RegistrationForm, LoginForm, SPUploadForm
+from webapp.models import User, Sensor, Key, APILog, APIBackup, get_date_time, SPCode, SPPost, SPEntry, SPUser
+from webapp.forms import RegistrationForm, LoginForm, SPUploadForm, SPPortalRegister, SPPortalLoginForm
 from webapp.scripts import key_64, nested_keys, one_line_graph, multi_line_graph
 from webapp.upload import get_creds, upload_file, getFileSize
 import datetime
@@ -15,6 +15,7 @@ import ast
 import json
 import requests
 import markdown2
+import os
 from os import path
 from urllib.request import urlretrieve
 import copy
@@ -147,12 +148,21 @@ def js_loader_secure(filename):
 		return send_file(fp + 's_whittington_listens.js')
 	elif filename == "sp_blog.js":
 		return send_file(fp + 's_sp_blog.js')
+	elif filename == "s_sp_blog.js":
+		return send_file(fp + 's_sp_blog.js')
 	elif filename == "sp_comp.js":
 		return send_file(fp + 's_sp_comp.js')
 	elif filename == "whittington_player.js":
 		return send_file(fp + 's_whittington_player.js')
 	else:
 		abort(404)
+
+@app.route("/css/<string:filename>", methods=["GET"])
+def css(filename):
+	fp = app.config['ROOT_FOLDER'] + '/static/css/'
+	response = make_response(send_file(fp + filename.replace("-", "/")))
+	response.headers['mimetype'] = 'text/css'
+	return response
 
 @app.route("/listens/<filename>", methods=['GET'])
 def listens(filename):
@@ -201,6 +211,74 @@ def sound(filename):
 		return response
 	else:
 		abort(404)
+
+
+@app.route("/SP/portal/signin", methods=['GET', 'POST'])
+def portal_sign_in():
+	if current_user.is_authenticated:
+		return redirect(url_for("portal"))
+
+	login_form = SPPortalLoginForm()
+	register_form = SPPortalRegister()
+	signup_key = request.args.get("key")
+	if signup_key is None:
+		signup_key = ""
+	if request.method == "POST":
+		try:
+			# get string to identify if the login form or the register form was submitted
+			form_type = request.form["spl_form_type"]
+		except KeyError:
+			try:
+				form_type = request.form["spr_form_type"]
+			except KeyError:
+				abort(404)
+		if form_type == "login":
+			user = User.query.filter_by(email=login_form.spl_email.data).first()
+			# print(user)
+			if user is None:
+				user = User.query.filter_by(username=login_form.spl_email.data).first()
+				# print(user)
+			if user is not None and user.verify_password(login_form.spl_password.data):
+				print(login_user(user))
+				print(user)
+				return redirect(url_for('portal'))
+			else:
+				print("TEST")
+				flash("test")
+		elif form_type == "register":
+			id = str(register_form.spr_signup_key.data)
+
+			user = User.query.filter_by(id=id).first()
+			if user == None:
+				pass
+			else:
+				if user.email == id:
+					# update users details
+					user.email = str(register_form.spr_email.data)
+					user.username = str(register_form.spr_username.data)
+					user.password = str(register_form.spr_password.data)
+					user.firstname = str(register_form.spr_firstname.data)
+					user.lastname = str(register_form.spr_lastname.data)
+					db.session.commit()
+
+					# automagically log in the user once they have registered
+					login_user(user)
+					return redirect(url_for('portal'))
+
+	return render_template("SPportal/signin.html", login=login_form, register=register_form, signup_q_key=signup_key)
+
+
+@app.route("/SP/portal")
+def portal():
+	if current_user.is_authenticated:
+		return render_template("SPportal/portal.html")
+	else:
+		return redirect(url_for('portal_sign_in'))
+
+@app.route("/SP/logout")
+def portal_logout():
+	logout_user()
+	return redirect(url_for('portal_sign_in'))
 
 
 @app.route("/test")
