@@ -53,7 +53,7 @@ imgur-python==0.2.1
 itsdangerous==1.1.0
 Jinja2==2.11.2
 kiwisolver==1.2.0
-markdown2==2.3.10
+markdown2==2.4.0
 MarkupSafe==1.1.1
 matplotlib==3.3.0
 numpy==1.19.1
